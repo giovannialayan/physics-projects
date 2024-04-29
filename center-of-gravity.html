@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>center of gravity</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+    
+    <style>
+        .html, .body {
+            font-family: arial;
+        }
+        
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            font-family: arial;
+        }
+      
+        th, td {
+            padding: 0px 10px 0px 0px;
+        }
+        
+        div.set{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            font-family: arial;
+        }
+        
+        div.mar {
+            margin-left:10px;
+        }
+        /*so many ideas so little time but try this, dumbass
+        https://www.d.umn.edu/~mlevy/CLASSES/ESAT3300/LABS/LAB8_COM/beampnts.htm?194,478
+        https://www.d.umn.edu/~mlevy/CLASSES/ESAT3300/LABS/LAB8_COM/cm.htm
+        */
+    </style>
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <div class="mar">
+    <div>
+        <form id="bodyweight">
+            total body weight(lb) = <input type="text">
+            average <input type="checkbox" checked="true">|
+            male <input type="checkbox">|
+            female <input type="checkbox">
+        </form>
+    </div>
+    <br/>
+    <button id="blood" onclick="cannibalize()">calculate segment data</button>
+    <br/>
+    <br/>
+    <table id="segments">
+        <tr>
+            <th>segment & (body weight%)</th>
+            <th>weight(lb)</th>
+            <th>weight(N)</th>
+        </tr>
+        <tr>
+            <td>head & neck</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>torso</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>upper arms</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>forearms</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>hands</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>thighs</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>legs</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>feet</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>total</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    </div>
+    <br/>
+    <br/>
+    <div class="mar">
+    <div>
+        <form id="bodyheight">
+            total height(in) = <input type="text">
+            average <input type="checkbox" checked="true">|
+            male <input type="checkbox">|
+            female <input type="checkbox">
+        </form>
+    </div>
+    <br/>
+    <button id="flesh" onclick="drink()">calculate segment data</button>
+    <br/>
+    <br/>
+    <table id="segmentsh">
+        <tr>
+            <th>segment & (body length%)</th>
+            <th>length(in)</th>
+            <th>length(m)</th>
+        </tr>
+        <tr>
+            <td>head & neck</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>torso</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>upper arms</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>forearms</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>hands</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>thighs</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>legs</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>feet</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    </div>
+    <br/>
+    <br/>
+    <div class="mar">
+    <p>length from proximal to center of gravity</p>
+    <table id="segmentscm">
+        <tr>
+            <th>segment & (segment length%)</th>
+            <th>length(in)</th>
+            <th>length(m)</th>
+            <th>proximal</th>
+        </tr>
+        <tr>
+            <td>head & neck</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>torso</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>upper arms</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>forearms</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>hands</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>thighs</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>legs</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>feet</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    </div>
+    <br/>
+    <br/>
+    <div class="mar">
+        <p>upload image and set an origin point for the body then click on the endpoints of each segments in this order: top of head, bottom of neck, mid hips, shoulder 1, elbow 1, wrist 1, fingertip 1, shoulder 2, elbow 2, wrist 2, fingertip 2, knee 1, ankle 1, heel 1, toetip 1, knee 2, ankle 2, heel 2, toetip 2</p>
+        <input type='file' accept="image/*" onclick="reset()">
+        <br/>
+        <textarea id="pasteArea" placeholder="or paste the image here"></textarea>
+        <br/>
+        <br/>
+        <a href="#" onclick="getcoord()">
+        <img id="myImg" src="#" alt="your image" ismap>
+        </a>
+        
+        <ul id="midpoints" style="list-style-type:none;">
+            <pre>
+            <li id="mp0"></li>
+            <li id="mp1"></li>
+            <li id="mp2"></li>
+            <li id="mp3"></li>
+            <li id="mp4"></li>
+            <li id="mp5"></li>
+            <li id="mp6"></li>
+            <li id="mp7"></li>
+            <li id="mp8"></li>
+            <li id="mp9"></li>
+            <li id="mp10"></li>
+            <li id="mp11"></li>
+            <li id="mp12"></li>
+            <li id="mp13"></li>
+            <li id="mp14"></li>
+            </pre>
+        </ul>
+    </div>
+    
+    <script>
+        var w;
+        var h;
+        var cm;
+        var cgx = 0;
+        var cgy = 0;
+        var n = 0;
+        var u = 1;
+        var r;
+        const Ncon = 4.4482216282509;
+        const Mcon = 39.37;
+        var point = [];
+        var pointctx = [];
+        var xc = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var yc = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var m = 0;
+        var originx;
+        var originy;
+        var mfa;
+        var xy = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        
+        //segment data weight
+        var segment = ["head & neck", "torso", "upper arms", "forearms", "hands", "thighs", "legs", "feet"];
+        var average = [.0681, .4302, .0263 * 2, .015 * 2, .00585 * 2, .1447 * 2, .0457 * 2, .0133 * 2];
+        var male = [.0694, .4346, .0271 * 2, .0162 * 2, .0061 * 2, .1416 * 2, .0433 * 2, .0137 * 2];
+        var female = [.0668, .4258, .0255 * 2, .0138 * 2, .0056 * 2, .1478 * 2, .0481 * 2, .0129 * 2];
+        
+        //segment data height y
+        
+        var malehy = [1-.8445, .8445-.53, .819-.63, .63-.485, .485-.357, .53-.285, .285-.051, .152]; //what the fuck why arent these figures uniform at the ankle
+        var femalehy = [1-.85, .85-.524, .825-.632, .632-.48, .48-.37, .524-.282, .282-.048, .151];
+        var averagehy = [(malehy[0]+femalehy[0])/2, (malehy[1]+femalehy[1])/2, (malehy[2]+femalehy[2])/2, (malehy[3]+femalehy[3])/2, (malehy[4]+femalehy[4])/2, (malehy[5]+femalehy[5])/2, (malehy[6]+femalehy[6])/2, (malehy[7]+femalehy[7])/2];
+        
+        //segment center of mass
+        var malecm = [.4841, .3782, .5754, .4559, .7474, .3612, .4352, .4014];
+        var femalecm = [.5002, .431, .5772, .4574, .79, .4095, .4395, .4415];
+        var averagecm = [(malecm[0]+femalecm[0])/2, (malecm[1]+femalecm[1])/2, (malecm[2]+femalecm[2])/2, (malecm[3]+femalecm[3])/2, (malecm[4]+femalecm[4])/2, (malecm[5]+femalecm[5])/2, (malecm[6]+femalecm[6])/2, (malecm[7]+femalecm[7])/2];
+        var proximal = ["top of head", "mid shoulder", "shoulder", "elbow", "wrist", "mid hip", "knees", "heel"];
+        
+        //enter to trigger
+        document.getElementById("bodyweight").addEventListener("keyup", function(event) {
+            if(event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("blood").click();
+            }
+        });
+        
+        document.getElementById("bodyheight").addEventListener("keyup", function(event) {
+            if(event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("flesh").click();
+            }
+        });
+        
+        
+        //checkbox check
+        function cannibalize() {
+            if(document.getElementById("bodyweight").elements[1].checked == true){calcAverage();}
+            if(document.getElementById("bodyweight").elements[2].checked == true){calcMale();}
+            if(document.getElementById("bodyweight").elements[3].checked == true){calcFemale();}
+        }
+        
+        function calcAverage() {
+            mfa = 0;
+            var totalp = 0;
+            var totaln = 0;
+            w = document.getElementById("bodyweight").elements[0].value;
+            
+            for(var rowNumber = 1; rowNumber < 9; rowNumber++) {
+                document.getElementById("segments").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((average[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+                
+                document.getElementById("segments").rows[rowNumber].cells[1].innerHTML = Math.round((w * average[rowNumber - 1]) * 1e3) / 1e3;
+                totalp += Math.round((w * average[rowNumber - 1]) * 1e3) / 1e3;
+                
+                document.getElementById("segments").rows[rowNumber].cells[2].innerHTML = Math.round((w * average[rowNumber - 1] * Ncon) * 1e3) / 1e3;
+                totaln += Math.round((w * average[rowNumber - 1] * Ncon) * 1e3) / 1e3;
+            }
+            document.getElementById("segments").rows[9].cells[1].innerHTML = Math.round((totalp) * 1e3) / 1e3;
+            document.getElementById("segments").rows[9].cells[2].innerHTML = Math.round((totaln) * 1e3) / 1e3;
+        }
+        
+        function calcMale() {
+            mfa = 1;
+            var totalp = 0;
+            var totaln = 0;
+            w = document.getElementById("bodyweight").elements[0].value;
+            
+            for(var rowNumber = 1; rowNumber < 9; rowNumber++) {
+                document.getElementById("segments").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] +  " (" + (Math.round((male[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+                
+                document.getElementById("segments").rows[rowNumber].cells[1].innerHTML = Math.round((w * male[rowNumber - 1]) * 1e3) / 1e3;
+                totalp += Math.round((w * male[rowNumber - 1]) * 1e3) / 1e3;
+                
+                document.getElementById("segments").rows[rowNumber].cells[2].innerHTML = Math.round((w * male[rowNumber - 1] * Ncon) * 1e3) / 1e3;
+                totaln += Math.round((w * male[rowNumber - 1] * Ncon) * 1e3) / 1e3;
+                
+            }
+            document.getElementById("segments").rows[9].cells[1].innerHTML = Math.round((totalp) * 1e3) / 1e3;
+            document.getElementById("segments").rows[9].cells[2].innerHTML = Math.round((totaln) * 1e3) / 1e3;
+        }
+        
+        function calcFemale() {
+            mfa = 2;
+            var totalp = 0;
+            var totaln = 0;
+            w = document.getElementById("bodyweight").elements[0].value;
+            
+            for(var rowNumber = 1; rowNumber < 9; rowNumber++) {
+                document.getElementById("segments").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] +  " (" + (Math.round((female[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+                
+                document.getElementById("segments").rows[rowNumber].cells[1].innerHTML = Math.round((w * female[rowNumber - 1]) * 1e3) / 1e3;
+                totalp += Math.round((w * female[rowNumber - 1]) * 1e3) / 1e3;
+                
+                document.getElementById("segments").rows[rowNumber].cells[2].innerHTML = Math.round((w * female[rowNumber - 1] * Ncon) * 1e3) / 1e3;
+                totaln += Math.round((w * female[rowNumber - 1] * Ncon) * 1e3) / 1e3;
+                
+            }
+            document.getElementById("segments").rows[9].cells[1].innerHTML = Math.round((totalp) * 1e3) / 1e3;
+            document.getElementById("segments").rows[9].cells[2].innerHTML = Math.round((totaln) * 1e3) / 1e3;
+        }
+        
+        //checkbox check
+        function drink() {
+            if(document.getElementById("bodyheight").elements[1].checked == true){calcAverageh();}
+            if(document.getElementById("bodyheight").elements[2].checked == true){calcMaleh();}
+            if(document.getElementById("bodyheight").elements[3].checked == true){calcFemaleh();}
+        }
+        
+        function calcAverageh() {
+            mfa = 0;
+            var temp1 = 0;
+            var temp2 = 0;
+            for(var i=0; i<malehy.length; i++) {
+                temp1 += malehy[i];
+                temp2 += femalehy[i];
+            }
+            console.log(temp1 + " , " + temp2);
+            
+            var totalp = 0;
+            var totaln = 0;
+            var l;
+            h = document.getElementById("bodyheight").elements[0].value;
+            
+            for(var rowNumber = 1; rowNumber < 9; rowNumber++) {
+                document.getElementById("segmentsh").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((averagehy[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+                
+                document.getElementById("segmentsh").rows[rowNumber].cells[1].innerHTML = Math.round((h * averagehy[rowNumber - 1]) * 1e3) / 1e3;
+                totalp += Math.round((h * averagehy[rowNumber - 1]) * 1e3) / 1e3;
+                
+                document.getElementById("segmentsh").rows[rowNumber].cells[2].innerHTML = Math.round((h * averagehy[rowNumber - 1] / Mcon) * 1e3) / 1e3;
+                totaln += Math.round((h * averagehy[rowNumber - 1] / Mcon) * 1e3) / 1e3;
+                
+                l = document.getElementById("segmentsh").rows[rowNumber].cells[1].innerHTML;
+                console.log(l);
+                document.getElementById("segmentscm").rows[rowNumber].cells[1].innerHTML = Math.round(l * averagecm[rowNumber - 1] * 1e3) / 1e3;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[2].innerHTML = Math.round(l * averagecm[rowNumber - 1] / Mcon * 1e3) / 1e3;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[3].innerHTML = proximal[rowNumber - 1];
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((averagecm[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+            }
+            // document.getElementById("segmentsh").rows[9].cells[1].innerHTML = Math.round((totalp) * 1e3) / 1e3;
+            // document.getElementById("segmentsh").rows[9].cells[2].innerHTML = Math.round((totaln) * 1e3) / 1e3;
+        }
+        
+        function calcMaleh() {
+            mfa = 1;
+            var totalp = 0;
+            var totaln = 0;
+            var l;
+            h = document.getElementById("bodyheight").elements[0].value;
+            
+            for(var rowNumber = 1; rowNumber < 9; rowNumber++) {
+                document.getElementById("segmentsh").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((malehy[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+                
+                document.getElementById("segmentsh").rows[rowNumber].cells[1].innerHTML = Math.round((h * malehy[rowNumber - 1]) * 1e3) / 1e3;
+                totalp += Math.round((h * malehy[rowNumber - 1]) * 1e3) / 1e3;
+                
+                document.getElementById("segmentsh").rows[rowNumber].cells[2].innerHTML = Math.round((h * malehy[rowNumber - 1] / Mcon) * 1e3) / 1e3;
+                totaln += Math.round((h * malehy[rowNumber - 1] / Mcon) * 1e3) / 1e3;
+                
+                l = document.getElementById("segmentsh").rows[rowNumber].cells[1].innerHTML;
+                console.log(l);
+                document.getElementById("segmentscm").rows[rowNumber].cells[1].innerHTML = Math.round(l * malecm[rowNumber - 1] * 1e3) / 1e3;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[2].innerHTML = Math.round(l * malecm[rowNumber - 1] / Mcon * 1e3) / 1e3;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[3].innerHTML = proximal[rowNumber - 1];
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((malecm[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+            }
+            document.getElementById("segmentsh").rows[9].cells[1].innerHTML = Math.round((totalp) * 1e3) / 1e3;
+            document.getElementById("segmentsh").rows[9].cells[2].innerHTML = Math.round((totaln) * 1e3) / 1e3;
+        }
+        
+        function calcFemaleh() {
+            mfa = 2;
+            var totalp = 0;
+            var totaln = 0;
+            var l;
+            h = document.getElementById("bodyheight").elements[0].value;
+            
+            for(var rowNumber = 1; rowNumber < 9; rowNumber++) {
+                document.getElementById("segmentsh").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((femalehy[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+                
+                document.getElementById("segmentsh").rows[rowNumber].cells[1].innerHTML = Math.round((h * femalehy[rowNumber - 1]) * 1e3) / 1e3;
+                totalp += Math.round((h * femalehy[rowNumber - 1]) * 1e3) / 1e3;
+                
+                document.getElementById("segmentsh").rows[rowNumber].cells[2].innerHTML = Math.round((h * femalehy[rowNumber - 1] / Mcon) * 1e3) / 1e3;
+                totaln += Math.round((h * femalehy[rowNumber - 1] / Mcon) * 1e3) / 1e3;
+                
+                l = document.getElementById("segmentsh").rows[rowNumber].cells[1].innerHTML;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[1].innerHTML = Math.round(l * femalecm[rowNumber - 1] * 1e3) / 1e3;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[2].innerHTML = Math.round(l * femalecm[rowNumber - 1] / Mcon * 1e3) / 1e3;
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[3].innerHTML = proximal[rowNumber - 1];
+                
+                document.getElementById("segmentscm").rows[rowNumber].cells[0].innerHTML = segment[rowNumber - 1] + " (" + (Math.round((femalecm[rowNumber - 1] * 100) * 1e3) / 1e3) + "%)";
+            }
+            document.getElementById("segmentsh").rows[9].cells[1].innerHTML = Math.round((totalp) * 1e3) / 1e3;
+            document.getElementById("segmentsh").rows[9].cells[2].innerHTML = Math.round((totaln) * 1e3) / 1e3;
+        }
+        
+        function getcoord() {
+            can.addEventListener("mousedown", function(event) {
+                var rect = can.getBoundingClientRect();
+                x = event.clientX - rect.left;
+                y = event.clientY - rect.top;
+                console.log("x: " + x + " y: " + y);
+            
+            
+            if(n == 0) {
+                if(document.getElementById("myImg").width >= document.getElementById("myImg").height){
+                    r = document.getElementById("myImg").height * .05;
+                }
+                else {
+                    r = document.getElementById("myImg").width * .05;
+                }
+                
+                //create origin
+                originx = x;
+                originy = y;
+                
+                console.log(originx);
+                console.log(originy);
+                
+                ctx = can.getContext("2d");
+                ctx.translate(originx, originy);
+                
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 15, 15, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.lineWidth = 3;
+                ctx.fillStyle = '#ffaa00';
+                ctx.fill();
+            }
+            
+            if(n > 0) {
+                x = x - originx;
+                y = y - originy;
+                
+                xc[m] = x;
+                yc[m] = y;
+                
+                xy[m] = x + "," + y;
+                console.log(x);
+                console.log(y);
+                
+                if(m == 0) {
+                    ctx.beginPath();
+                    ctx.ellipse(xc[0], yc[0], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(xc[0], yc[0]); //top of head
+                    ctx.lineTo(xc[1], yc[1]); //to bottom of neck
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[0], yc[0], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[1], yc[1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 2) {
+                    ctx.beginPath();
+                    ctx.moveTo(xc[1], yc[1]); //bottom of neck
+                    ctx.lineTo(xc[2], yc[2]); //to hips
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m - 1], yc[m - 1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[2], yc[2], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 3 || m == 7) {
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 4 || m == 8) {
+                    ctx.beginPath();
+                    ctx.moveTo(xc[m - 1],  yc[m - 1]); //shoulder
+                    ctx.lineTo(xc[m],  yc[m]); //to elbow
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m - 1], yc[m - 1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 5 || m == 9) {
+                    ctx.beginPath();
+                    ctx.lineTo(xc[m - 1],  yc[m - 1]); //elbow
+                    ctx.lineTo(xc[m],  yc[m]); //to wrist
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m - 1], yc[m - 1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 6 || m == 10) {
+                    ctx.beginPath();
+                    ctx.lineTo(xc[m - 1],  yc[m - 1]); //wrist
+                    ctx.lineTo(xc[m],  yc[m]); //to fingertip
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m - 1], yc[m - 1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 11 || m == 15) {
+                    ctx.beginPath();
+                    ctx.moveTo(xc[2],  yc[2]); //hips
+                    ctx.lineTo(xc[m],  yc[m]); //to knee
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[2], yc[2], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 12 || m == 16) {
+                    ctx.beginPath();
+                    ctx.lineTo(xc[m - 1],  yc[m - 1]); //knee
+                    ctx.lineTo(xc[m],  yc[m]); //to ankle
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m - 1], yc[m - 1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 13 || m == 17) {
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                if(m == 14 || m == 18) {
+                    ctx.beginPath();
+                    ctx.moveTo(xc[m - 1],  yc[m - 1]); //heel
+                    ctx.lineTo(xc[m],  yc[m]); //to toetip
+                    ctx.strokeStyle = "#ff0000";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(xc[m - 1], yc[m - 1], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.ellipse(xc[m], yc[m], 5, 5, Math.PI / 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#ff00ff";
+                    ctx.fill();
+                }
+                
+                m++;
+            }
+            console.log(n);
+            if(n >= 19) {
+                var t = 0;
+                var segper = [0,0,0,0,0,0,0,0,0,0,0,0];
+                if(mfa == 0) {
+                    for(var i = 0; i < averagecm.length; i++) {
+                        segper[i] = averagecm[i];
+                    }
+                }
+                if(mfa == 1) {
+                    for(var i = 0; i < malecm.length; i++) {
+                        segper[i] = malecm[i];
+                    }
+                }
+                if(mfa == 2) {
+                    for(var i = 0; i < femalecm.length; i++) {
+                        segper[i] = femalecm[i];
+                    }
+                }
+                
+                var fuckme;
+                var whatthefuck;
+                console.log("----midpoints----");
+                document.getElementById("mp0").innerHTML = "center of gravity of each segment";
+                
+                //head
+                fuckme = parseFloat(xy[0].split(",")[0]) + (parseFloat(xy[1].split(",")[0]) - parseFloat(xy[0].split(",")[0])) * segper[0];
+                whatthefuck = parseFloat(xy[0].split(",")[1]) + (parseFloat(xy[1].split(",")[1]) - parseFloat(xy[0].split(",")[1])) * segper[0];
+                
+                cgx += document.getElementById("segments").rows[1].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[1].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp1").innerHTML = "       head: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("head:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //torso
+                fuckme = parseFloat(xy[1].split(",")[0]) + (parseFloat(xy[2].split(",")[0]) - parseFloat(xy[1].split(",")[0])) * segper[1];
+                whatthefuck = parseFloat(xy[1].split(",")[1]) + (parseFloat(xy[2].split(",")[1]) - parseFloat(xy[1].split(",")[1])) * segper[1];
+                
+                cgx += document.getElementById("segments").rows[2].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[2].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp2").innerHTML = "      torso: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("torso:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //upper arm 1
+                fuckme = parseFloat(xy[3].split(",")[0]) + (parseFloat(xy[4].split(",")[0]) - parseFloat(xy[3].split(",")[0])) * segper[2];
+                whatthefuck = parseFloat(xy[3].split(",")[1]) + (parseFloat(xy[4].split(",")[1]) - parseFloat(xy[3].split(",")[1])) * segper[2];
+                
+                cgx += document.getElementById("segments").rows[3].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[3].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp3").innerHTML = "upper arm 1: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("upper arm 1:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //forearm 1
+                fuckme = parseFloat(xy[4].split(",")[0]) + (parseFloat(xy[5].split(",")[0]) - parseFloat(xy[4].split(",")[0])) * segper[3];
+                whatthefuck = parseFloat(xy[4].split(",")[1]) + (parseFloat(xy[5].split(",")[1]) - parseFloat(xy[4].split(",")[1])) * segper[3];
+                
+                cgx += document.getElementById("segments").rows[4].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[4].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp4").innerHTML = "  forearm 1: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("forearm 1:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //hand 1
+                fuckme = parseFloat(xy[5].split(",")[0]) + (parseFloat(xy[6].split(",")[0]) - parseFloat(xy[5].split(",")[0])) * segper[4];
+                whatthefuck = parseFloat(xy[5].split(",")[1]) + (parseFloat(xy[6].split(",")[1]) - parseFloat(xy[5].split(",")[1])) * segper[4];
+                
+                cgx += document.getElementById("segments").rows[5].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[5].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp5").innerHTML = "     hand 1: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("hand 1:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //upper arm 2
+                fuckme = parseFloat(xy[7].split(",")[0]) + (parseFloat(xy[8].split(",")[0]) - parseFloat(xy[7].split(",")[0])) * segper[2];
+                whatthefuck = parseFloat(xy[7].split(",")[1]) + (parseFloat(xy[8].split(",")[1]) - parseFloat(xy[7].split(",")[1])) * segper[2];
+                
+                cgx += document.getElementById("segments").rows[3].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[3].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp6").innerHTML = "upper arm 2: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("upper arm 2:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //forearm 2
+                fuckme = parseFloat(xy[8].split(",")[0]) + (parseFloat(xy[9].split(",")[0]) - parseFloat(xy[8].split(",")[0])) * segper[3];
+                whatthefuck = parseFloat(xy[8].split(",")[1]) + (parseFloat(xy[9].split(",")[1]) - parseFloat(xy[8].split(",")[1])) * segper[3];
+                
+                cgx += document.getElementById("segments").rows[4].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[4].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp7").innerHTML = "  forearm 2: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("forearm 2:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //hand 2
+                fuckme = parseFloat(xy[9].split(",")[0]) + (parseFloat(xy[10].split(",")[0]) - parseFloat(xy[9].split(",")[0])) * segper[4];
+                whatthefuck = parseFloat(xy[9].split(",")[1]) + (parseFloat(xy[10].split(",")[1]) - parseFloat(xy[9].split(",")[1])) * segper[4];
+                
+                cgx += document.getElementById("segments").rows[5].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[5].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp8").innerHTML = "     hand 2: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("hand 2:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //thigh 1
+                fuckme = parseFloat(xy[2].split(",")[0]) + (parseFloat(xy[11].split(",")[0]) - parseFloat(xy[2].split(",")[0])) * segper[5];
+                whatthefuck = parseFloat(xy[2].split(",")[1]) + (parseFloat(xy[11].split(",")[1]) - parseFloat(xy[2].split(",")[1])) * segper[5];
+                
+                cgx += document.getElementById("segments").rows[6].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[6].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp9").innerHTML = "     thigh 1: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("thigh 1:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //leg 1
+                fuckme = parseFloat(xy[11].split(",")[0]) + (parseFloat(xy[12].split(",")[0]) - parseFloat(xy[11].split(",")[0])) * segper[6];
+                whatthefuck = parseFloat(xy[11].split(",")[1]) + (parseFloat(xy[12].split(",")[1]) - parseFloat(xy[11].split(",")[1])) * segper[6];
+                
+                cgx += document.getElementById("segments").rows[7].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[7].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp10").innerHTML = "       leg 1: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("leg 1:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //foot 1
+                fuckme = parseFloat(xy[13].split(",")[0]) + (parseFloat(xy[14].split(",")[0]) - parseFloat(xy[13].split(",")[0])) * segper[7];
+                whatthefuck = parseFloat(xy[13].split(",")[1]) + (parseFloat(xy[14].split(",")[1]) - parseFloat(xy[13].split(",")[1])) * segper[7];
+                
+                cgx += document.getElementById("segments").rows[8].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[8].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp11").innerHTML = "      foot 1: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("foot 1:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //thigh 2
+                fuckme = parseFloat(xy[2].split(",")[0]) + (parseFloat(xy[15].split(",")[0]) - parseFloat(xy[2].split(",")[0])) * segper[5];
+                whatthefuck = parseFloat(xy[2].split(",")[1]) + (parseFloat(xy[15].split(",")[1]) - parseFloat(xy[2].split(",")[1])) * segper[5];
+                
+                cgx += document.getElementById("segments").rows[6].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[6].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp12").innerHTML = "     thigh 2: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("thigh 2:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //leg 2
+                fuckme = parseFloat(xy[15].split(",")[0]) + (parseFloat(xy[16].split(",")[0]) - parseFloat(xy[15].split(",")[0])) * segper[6];
+                whatthefuck = parseFloat(xy[15].split(",")[1]) + (parseFloat(xy[16].split(",")[1]) - parseFloat(xy[15].split(",")[1])) * segper[6];
+                
+                cgx += document.getElementById("segments").rows[7].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[7].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp13").innerHTML = "       leg 2: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("leg 2:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //foot 2
+                fuckme = parseFloat(xy[17].split(",")[0]) + (parseFloat(xy[18].split(",")[0]) - parseFloat(xy[17].split(",")[0])) * segper[7];
+                whatthefuck = parseFloat(xy[17].split(",")[1]) + (parseFloat(xy[18].split(",")[1]) - parseFloat(xy[17].split(",")[1])) * segper[7];
+                
+                cgx += document.getElementById("segments").rows[8].cells[1].innerHTML * fuckme;
+                cgy += document.getElementById("segments").rows[8].cells[1].innerHTML * whatthefuck;
+                
+                ctx.beginPath();
+                ctx.ellipse(fuckme, whatthefuck, 10, 10, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#444444";
+                ctx.fill();
+                document.getElementById("mp14").innerHTML = "      foot 2: x = " + fuckme + ", y = " + whatthefuck;
+                console.log("foot 2:");
+                console.log(fuckme);
+                console.log(whatthefuck);
+                
+                //aaahhhhh
+                cgx = cgx / parseFloat(document.getElementById("segments").rows[9].cells[1].innerHTML);
+                cgy = cgy / parseFloat(document.getElementById("segments").rows[9].cells[1].innerHTML);
+                
+                console.log("cog:");
+                console.log(cgx);
+                console.log(cgy);
+                
+                ctx.beginPath();
+                ctx.ellipse(cgx, cgy, 20, 20, Math.PI / 4, 0, 2 * Math.PI);
+                ctx.fillStyle = "#ffa3cc";
+                ctx.fill();
+                console.log("mission complete");
+            }
+            
+            n++;
+            });
+        }
+        
+        function lineDistance(p1, p2) {
+            var p1x = p1.split(",")[0];
+            var p1y = p1.split(",")[1];
+            var p2x = p2.split(",")[0];
+            var p2y = p2.split(",")[1];
+            return Math.hypot(p2x - p1x, p2y - p1y)
+        }
+        
+        function reset() {
+            cgx = 0;
+            cgy = 0;
+            n = 0;
+            m = 0;
+            document.getElementById("myImg").innerHTML = "";
+        }
+        
+        function scaleDown() {
+            console.log("hi");
+            var imageWidth = document.getElementById("myImg").width;
+            var imageHeight = document.getElementById("myImg").height;
+            var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || document.body.offsetWidth;
+            
+            if(imageWidth > screenWidth) {
+                var ratiow = imageWidth - screenWidth;
+                var ratio = ratiow / imageWidth;
+                var ratioh = ratio * imageHeight;
+                imageWidth = imageWidth - ratiow;
+                imageHeight = imageHeight - ratioh;
+            }
+        }
+        
+        var img = document.getElementById("myImg");
+        var can;
+        var ctx;
+        $(img).on('load', function() {
+            //draw image canvas
+            can = document.createElement("canvas");
+            can.id = "prey";
+            document.body.appendChild(can);
+            can.style.position = "absolute";
+            can.style.left = document.getElementById("myImg").offsetLeft + "px";
+            can.style.top = document.getElementById("myImg").offsetTop + "px";
+            can.width = document.getElementById("myImg").width;
+            can.height = document.getElementById("myImg").height;
+            can.style.border = "2px solid #d3d3d3";
+            getcoord();
+        });
+    
+        $(function () {
+            $(":file").change(function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = imageIsLoaded;
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+        
+        function imageIsLoaded(e) {
+            $('#myImg').attr('src', e.target.result);
+        };
+        
+        document.getElementById('pasteArea').onpaste = function (event) {
+          // use event.originalEvent.clipboard for newer chrome versions
+          var items = (event.clipboardData  || event.originalEvent.clipboardData).items;
+          console.log(JSON.stringify(items)); // will give you the mime types
+          // find pasted image among pasted items
+          var blob = null;
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") === 0) {
+              blob = items[i].getAsFile();
+            }
+          }
+          // load image if there is a pasted image
+          if (blob !== null) {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+              console.log(event.target.result); // data url!
+              document.getElementById("myImg").src = event.target.result;
+            };
+            reader.readAsDataURL(blob);
+          }
+        }
+    </script>
+</body>
+</html>

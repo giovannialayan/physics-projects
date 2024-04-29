@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        gravity tractor
+    </title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+    
+    <style>
+    div.set{
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <div class="set">
+    <div>
+    gravity tractor<br/><br/>
+    <form id="input">
+            <pre>
+                mass of asteroid (kg) = <input type="text" value="4.6e10"><br/><br/>
+               radius of asteroid (m) = <input type="text" value="160"><br/><br/>
+   total mass of gravity tractor (kg) = <input type="text" value="1000"><br/><br/>
+                    towing time (yrs) = <input type="text" value="1" name="radius"><br/><br/>
+                  coasting time (yrs) = <input type="text" value="3" name="radius"><br/><br/>
+             specific impulse (Ns/kg) = <input type="text" value="3000" name="radius"><br/><br/></pre>
+    </form>
+    <button type="button" onclick="gravTractor()">find distance traveled</button>
+    <p id="gravTractor"></p>
+    <p id="time"></p>
+    <p id="timedays"></p>
+    </div>
+    </div>
+    
+    <script>
+        var G = 6.67e-11;
+        var x;
+        var r;
+        var mtotal;
+        var Isp;
+    
+        function gravTractor() {
+            bigm = parseFloat(document.getElementById("input").elements[0].value);
+            r = parseFloat(document.getElementById("input").elements[1].value) * 1.5;
+            mtotal = parseFloat(document.getElementById("input").elements[2].value);
+            dt = parseFloat(document.getElementById("input").elements[3].value) * 3.154e7;
+            tc = parseFloat(document.getElementById("input").elements[4].value) * 3.154e7;
+            Isp = parseFloat(document.getElementById("input").elements[5].value);
+            
+            var T = G * bigm * mtotal / Math.pow(r,2);
+            var A = T / bigm;
+            var dm = 2 * T * 86400 / (9.81 * Isp);
+            
+            x = (3/2) * A * dt * (dt + 2 * tc);
+            
+            
+            document.getElementById("gravTractor").innerHTML = "travel distance (m) = " + x;
+            document.getElementById("time").innerHTML = "mass flow rate (kg/day) = " + dm;
+        }
+        
+        function findmass() {
+            r = parseFloat(document.getElementById("input2").elements[0].value) * 1.5;
+            x = parseFloat(document.getElementById("input2").elements[1].value);
+            dm = parseFloat(document.getElementById("input2").elements[2].value);
+            mrocket = parseFloat(document.getElementById("input2").elements[3].value);
+            
+            var h = 0;
+            var t = 1;
+            
+            while(h < x) {
+                mfuel = ((-2*r / G) * x + (dm * Math.pow(t,3) / 6)) / Math.pow(t,2) - mrocket;
+                h = (-G / Math.pow(r,2)) * ((((mfuel+mrocket) * Math.pow(t,2)) / 2) - dm * (Math.pow(t,3) / 6));
+                t++;
+            }
+            
+            document.getElementById("massfound").innerHTML = "fuel mass needed (kg) = " + mfuel;
+            document.getElementById("time2").innerHTML = "travel time (s) = " + (Math.pow(t,3) / 6);
+            document.getElementById("timedays2").innerHTML = "travel time (days) = " + (Math.pow(t,3) / 6 / 86400);
+        }
+        
+        function gravtrac() {
+            r = parseFloat(document.getElementById("input3").elements[0].value) * 1.5;
+            t = parseFloat(document.getElementById("input3").elements[1].value) * 86400;
+            t = Math.cbrt(t) * 6;
+            dm = parseFloat(document.getElementById("input3").elements[2].value);
+            mfuel = parseFloat(document.getElementById("input3").elements[3].value);
+            mrocket = parseFloat(document.getElementById("input3").elements[4].value);
+            
+            x = (-G / Math.pow(r,2)) * ((((mfuel + mrocket) * Math.pow(t,2)) / 2) - dm * (Math.pow(t,3) / 6));
+            
+            document.getElementById("gravTractor3").innerHTML = "travel distance (m) = " + x;
+        }
+    </script>
+</body>
+</html>

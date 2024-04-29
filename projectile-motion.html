@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>projectile motion</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+</head>
+<body>
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <form id="input">
+        Projectile motion with air resistance calculator<br/><br/>
+            <pre>
+     initial speed x(m/s) = <input type="text" value="31.46" name="speedx"><br/><br/>
+     initial speed y(m/s) = <input type="text" value="12.72" name="speedy"><br/><br/>
+                 Mass(kg) = <input type="text" value=".146" name="mass"><br/><br/>
+         Drag coefficient = <input type="text" value=".3" name="drag"><br/><br/>
+      Air desnity(kg/m^3) = <input type="text" value="1.2933" name="air"><br/><br/>
+Cross sectional area(m^2) = <input type="text" value=".003848" name="area"><br/><br/>
+            </pre>
+    </form>
+    <button type="button" onclick="findy()">find y</button>
+    <p id="find y"></p>
+    <button type="button" onclick="findvf()">find vf</button>
+    <p id="find vf"></p>
+    <button type="button" onclick="findtdown()">find t down</button>
+    <p id="t down"></p>
+    <button type="button" onclick="findtup()">find t up</button>
+    <p id="t up"></p>
+    <button type="button" onclick="findx()">find x</button>
+    <p id="find x"></p>
+    
+<script>
+    //what we know
+    var vix;
+    var viy;
+    var m;
+    var drag;
+    var p;
+    var area;
+    var k;
+    //var angle;
+    var g = 9.8;
+    var e = 2.718281828;
+    
+    //what we want to know
+    var y;
+    var vf;
+    var tdown;
+    var tup;
+    var x;
+    
+    function findy() {
+        vix   = document.getElementById("input").elements[0].value;
+        viy   = document.getElementById("input").elements[1].value;
+        m     = document.getElementById("input").elements[2].value;
+        drag  = document.getElementById("input").elements[3].value;
+        p     = document.getElementById("input").elements[4].value;
+        area  = document.getElementById("input").elements[5].value;
+        k     = (drag * p * area) / (2 * m);
+        y = (-1 / (2 * k)) * Math.log(Math.abs(g / (g + k * Math.pow(viy,2))));
+        document.getElementById("find y").innerHTML = "y = " +  y + " m";
+    }
+    
+    function findvf() {
+        var ty;
+        vix   = document.getElementById("input").elements[0].value;
+        viy   = document.getElementById("input").elements[1].value;
+        m     = document.getElementById("input").elements[2].value;
+        drag  = document.getElementById("input").elements[3].value;
+        p     = document.getElementById("input").elements[4].value;
+        area  = document.getElementById("input").elements[5].value;
+        k     = (drag * p * area) / (2 * m);
+        if(y == Math.abs(y)){ty = -y;}else{ty = y;}
+        vf = Math.sqrt((g - g * Math.pow(e,2 * k * ty)) / k);
+        document.getElementById("find vf").innerHTML = "vf = " + vf + " m/s";
+    }
+    
+    function findtdown() {
+        vix   = document.getElementById("input").elements[0].value;
+        viy   = document.getElementById("input").elements[1].value;
+        m     = document.getElementById("input").elements[2].value;
+        drag  = document.getElementById("input").elements[3].value;
+        p     = document.getElementById("input").elements[4].value;
+        area  = document.getElementById("input").elements[5].value;
+        k     = (drag * p * area) / (2 * m);
+        tdown = (Math.acosh(Math.pow(e,k * y)) / Math.sqrt(k * g));
+        document.getElementById("t down").innerHTML = "t down = " + tdown + " s";
+    }
+    
+    function findtup() {
+        vix   = document.getElementById("input").elements[0].value;
+        viy   = document.getElementById("input").elements[1].value;
+        m     = document.getElementById("input").elements[2].value;
+        drag  = document.getElementById("input").elements[3].value;
+        p     = document.getElementById("input").elements[4].value;
+        area  = document.getElementById("input").elements[5].value;
+        k     = (drag * p * area) / (2 * m);
+        tup = (Math.atan(Math.sqrt(k / g) * viy) / Math.sqrt(k * g));
+        document.getElementById("t up").innerHTML = "t up = " + tup + " s";
+    }
+    
+    function findx() {
+        vix   = document.getElementById("input").elements[0].value;
+        viy   = document.getElementById("input").elements[1].value;
+        m     = document.getElementById("input").elements[2].value;
+        drag  = document.getElementById("input").elements[3].value;
+        p     = document.getElementById("input").elements[4].value;
+        area  = document.getElementById("input").elements[5].value;
+        k     = (drag * p * area) / (2 * m);
+        x = (Math.log(1+ k * vix * (tup + tdown))) / k;
+        document.getElementById("find x").innerHTML = "x = " + x + " m";
+    }
+</script>
+</body>
+</html>

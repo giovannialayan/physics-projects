@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>rotation</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+    
+    <style>
+        .pageDisp {
+            display: none;
+        }
+    </style>
+    
+    <script src="https://cdnjs.com/libraries/mathjs"></script>
+</head>
+<body onload="start()">
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <div id="nonCalc">
+        <!--<button type="button" onclick="goToCalc()">switch to calculus</button>-->
+        <br/>
+        <div class="text">
+        <p>only input the fields that apply to what you are trying to solve</p>
+        <p>click on the value you want to solve for below the inputs</p>
+        <p>to write a value in vector component form use the format i,j,k</p>
+        </div>
+        <br/>
+        <form id="nonCalcForm">
+            <pre>
+    a = <input type="text" value=""><br/>
+    v = <input type="text" value=""><br/>
+   vi = <input type="text" value=""><br/>
+   vf = <input type="text" value=""><br/>
+    d = <input type="text" value=""><br/>
+    m = <input type="text" value=""><br/>
+    F = <input type="text" value=""><br/>
+    p = <input type="text" value=""><br/>
+    r = <input type="text" value=""><br/>
+  rev = <input type="text" value=""><br/>
+rev/s = <input type="text" value=""><br/>
+    t = <input type="text" value=""><br/>
+    &alpha; = <input type="text" value=""><br/>
+    &omega; = <input type="text" value=""><br/>
+   &omega;i = <input type="text" value=""><br/>
+   &omega;f = <input type="text" value=""><br/>
+    I = <input type="text" value=""><br/>
+    &tau; = <input type="text" value=""><br/>
+    &theta; = <input type="text" value=""><br/>
+   Wr = <input type="text" value=""><br/>
+  KEr = <input type="text" value=""><br/>
+    L = <input type="text" value=""><br/>
+   &Delta;L = <input type="text" value=""><br/>
+            </pre>
+        </form>
+        <br/>
+        <pre>
+<a onclick="check();        solveAcc()">     linear acceleration = </a><span id="accLanding"></span><br>
+<a onclick="check();        solveVel()">         linear velocity = </a><span id="velLanding"></span><br>
+<a onclick="check();       solveVeli()"> initial linear velocity = </a><span id="veliLanding"></span><br>
+<a onclick="check();       solveVelf()">   final linear velocity = </a><span id="velfLanding"></span><br>
+<a onclick="check();       solveDisp()">     linear displacement = </a><span id="dispLanding"></span><br>
+<a onclick="check();       solveMass()">                    mass = </a><span id="massLanding"></span><br>
+<a onclick="check();      solveForce()">            linear force = </a><span id="forceLanding"></span><br>
+<a onclick="check();        solveMom()">         linear momentum = </a><span id="momLanding"></span><br>
+<a onclick="check();        solveRad()">                  radius = </a><span id="radLanding"></span><br>
+<a onclick="check();        solveRev()">             revolutions = </a><span id="revLanding"></span><br>
+<a onclick="check();      solveRevps()">  revolutions per second = </a><span id="revpsLanding"></span><br>
+<a onclick="check();       solveTime()">                    time = </a><span id="timeLanding"></span><br>
+<a onclick="check();     solveAngAcc()">    angular acceleration = </a><span id="angaccLanding"></span><br>
+<a onclick="check();       solveButt()">        angular velocity = </a><span id="buttLanding"></span><br>
+<a onclick="check();      solveButti()">initial angular velocity = </a><span id="buttiLanding"></span><br>
+<a onclick="check();      solveButtf()">  final angular velocity = </a><span id="buttfLanding"></span><br>
+<a onclick="check();       solveIner()">           inertial mass = </a><span id="inerLanding"></span><br>
+<a onclick="check();       solveTorq()">                  torque = </a><span id="torqLanding"></span><br>
+<a onclick="check();        solveAng()">                   angle = </a><span id="angLanding"></span><br>
+<a onclick="check();    solveAngWork()">            angular work = </a><span id="angworkLanding"></span><br>
+<a onclick="check();    solveAngWork()">  angular kinetic energy = </a><span id="angenergyLanding"></span><br>
+<a onclick="check();     solveAngMom()">        angular momentum = </a><span id="angmomLanding"></span><br>
+<a onclick="check(); solveAngImpulse()">         angular impulse = </a><span id="angimlanding"></span><br>
+        </pre>
+    </div>
+    
+    <div id="withCalc" class="pageDisp">
+        <button type="button" onclick="goToNonCalc()">switch to non calculus</button>
+        <br/>
+        <div class="text">
+        <p>only input the fields that apply to what you are trying to solve</p>
+        <p>click on the value you want to solve for below the inputs</p>
+        <p>to write a value in vector component form use the format i,j,k</p>
+        </div>
+        <br/>
+        <form id="withCalcForm">
+            <pre>
+dv/dt = <input type="text" value=""><br/>
+ds/dt = <input type="text" value=""><br/>
+    s = <input type="text" value=""><br/>
+d&omega;/dt = <input type="text" value=""><br/>
+d&theta;/dt = <input type="text" value=""><br/>
+    &theta; = <input type="text" value=""><br/>
+    &Tau; = <input type="text" value=""><br/>
+   Wr = <input type="text" value=""><br/>
+            </pre>
+        </form>
+        <br/>
+        <div>
+        <a onclick="checkC(); solveAcc()">linear acceleration = </a><span id="accCLanding"></span><br>
+        <a onclick="checkC(); solveVel()">linear velocity = </a><span id="velCLanding"></span><br>
+        <a onclick="checkC(); solveDisp()">linear displacement = </a><span id="dispCLanding"></span><br>
+        <a onclick="checkC(); solveAngAcc()">angular acceleration = </a><span id="angaccCLanding"></span><br>
+        <a onclick="checkC(); solveButt()">angular velocity = </a><span id="angvelCLanding"></span><br>
+        <a onclick="checkC(); solveAng()"> angular displacement = </a><span id="angCLanding"></span><br>
+        <a onclick="checkC(); solveAngWork()"> angular work = </a><span id="angworkCLanding"></span><br>
+        </div>
+    </div>
+    <script>
+        //non calc
+        var a;
+        var v;
+        var vi;
+        var vf;
+        var d;
+        var r;
+        var rev;
+        var revps;
+        var m;
+        var F;
+        var p;
+        var alpha;
+        var butt;
+        var butti;
+        var buttf;
+        var I;
+        var Tau;
+        var theta;
+        var Wr;
+        var KEr;
+        var L;
+        var Im;
+        
+        //with calc
+        var dv;
+        var ds;
+        var s;
+        var dbutt;
+        var dtheta;
+        
+        //both
+        
+        
+        //constants
+        var g = 9.8;
+        
+        //backend
+        var moderotation = 0;
+        var blank = "";
+    
+        function start() {
+            moderotation = sessionStorage.getItem("moderotation");
+            if(moderotation != 1) {
+                goToNonCalc();
+            }
+            if(moderotation == 1) {
+                goToCalc();
+            }
+        }
+    
+        function goToNonCalc() {
+            document.getElementById("withCalc").style.display = "none";
+            document.getElementById("nonCalc").style.display = "block";
+            sessionStorage.removeItem("moderotation");
+            sessionStorage.setItem("moderotation", 0);
+            moderotation = 0;
+        }
+        
+        function goToCalc() {
+            document.getElementById("nonCalc").style.display = "none";
+            document.getElementById("withCalc").style.display = "block";
+            sessionStorage.removeItem("moderotation");
+            sessionStorage.setItem("moderotation", 1);
+            moderotation = 1;
+        }
+        
+        function check() {
+            a =     document.getElementById("nonCalcForm").elements[0].value;
+            v =     document.getElementById("nonCalcForm").elements[1].value;
+            vi =    document.getElementById("nonCalcForm").elements[2].value;
+            vf =    document.getElementById("nonCalcForm").elements[3].value;
+            d =     document.getElementById("nonCalcForm").elements[4].value;
+            m =     document.getElementById("nonCalcForm").elements[5].value;
+            F =     document.getElementById("nonCalcForm").elements[6].value;
+            p =     document.getElementById("nonCalcForm").elements[7].value;
+            r =     document.getElementById("nonCalcForm").elements[8].value;
+            rev =   document.getElementById("nonCalcForm").elements[9].value;
+            revps = document.getElementById("nonCalcForm").elements[10].value;
+            t =     document.getElementById("nonCalcForm").elements[11].value;
+            alpha = document.getElementById("nonCalcForm").elements[12].value;
+            butt =  document.getElementById("nonCalcForm").elements[13].value;
+            butti = document.getElementById("nonCalcForm").elements[14].value;
+            buttf = document.getElementById("nonCalcForm").elements[15].value;
+            I =     document.getElementById("nonCalcForm").elements[16].value;
+            Tau =   document.getElementById("nonCalcForm").elements[17].value;
+            theta = document.getElementById("nonCalcForm").elements[18].value;
+            Wr =    document.getElementById("nonCalcForm").elements[19].value;
+            KEr =   document.getElementById("nonCalcForm").elements[20].value;
+            L =     document.getElementById("nonCalcForm").elements[21].value;
+            Im =    document.getElementById("nonCalcForm").elements[22].value;
+        }
+        
+        function checkC() {
+            dv =     document.getElementById("nonCalcForm").elements[0].value;
+            ds =     document.getElementById("nonCalcForm").elements[1].value;
+            s =      document.getElementById("nonCalcForm").elements[2].value;
+            dbutt =  document.getElementById("nonCalcForm").elements[3].value;
+            dtheta = document.getElementById("nonCalcForm").elements[4].value;
+            theta =  document.getElementById("nonCalcForm").elements[5].value;
+            Tau =    document.getElementById("nonCalcForm").elements[6].value;
+            Wr =     document.getElementById("nonCalcForm").elements[7].value;
+        }
+        
+        function solveAcc() {
+            if(moderotation == 0) {
+                if(r != blank && alpha != blank){
+                    r = eval(r);
+                    alpha = eval(alpha);
+                    a = r * alpha;
+                }
+                
+                if(vf != blank && vi != blank && d != blank) {
+                    vi = eval(vi);
+                    d = eval(d);
+                    vf = eval(vf);
+                    a = (Math.pow(vf,2) - Math.pow(vi,2)) / (2 * d);
+                }
+                
+                if(d != blank && vi != blank && t != blank) {
+                    vi = eval(vi);
+                    d = eval(d);
+                    t = eval(t);
+                    a = (d - vi * t) / (.5 * Math.pow(t,2));
+                }
+                
+                if(vf != blank && vi != blank && t != blank) {
+                    vi = eval(vi);
+                    vf = eval(vf);
+                    t = eval(t);
+                    a = (vf - vi) / t;
+                }
+                
+                if(v != blank && t != blank) {
+                    v = eval(v);
+                    t = eval(t);
+                    a = v / t;
+                }
+                
+                document.getElementById("accLanding").innerHTML = a;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                if(ds != blank) {
+                    dv = math.derivative(ds);
+                }
+                
+                if(s != blank) {
+                    dv = math.derivative(math.derivative(s));
+                }
+                
+                document.getElementById("accCLanding").innerHTML = dv;
+                return;
+            }
+        }
+        
+        function solveVel() {
+            if(moderotation == 0) {
+                if(r != blank && butt != blank){
+                    r = eval(r);
+                    butt = eval(butt);
+                    v = r * butt;
+                }
+                
+                document.getElementById("velLanding").innerHTML = v;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                if(dv != blank) {
+                    ds = math.integral(dv);
+                }
+                
+                if(s != blank) {
+                    ds = math.derivative(s);
+                }
+                
+                document.getElementById("velCLanding").innerHTML = ds;
+                return;
+            }
+        }
+        
+        function solveVeli() {
+            if(moderotation == 0) {
+                if(r != blank && butti != blank){
+                    r = eval(r);
+                    butti = eval(butti);
+                    vi = r * butti;
+                }
+                
+                if(vf != blank && a != blank && d !=blank) {
+                    vf = eval(vf);
+                    a = eval(a);
+                    d = eval(d);
+                    vi = Math.sqrt(Math.pow(vf,2) - 2 * a * d);
+                }
+                
+                if(vf != blank && a != blank && t != blank) {
+                    vf = eval(vf);
+                    a = eval(a);
+                    t = eval(t);
+                    vi = vf - a * t;
+                }
+                
+                document.getElementById("veliLanding").innerHTML = vi;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveVelf() {
+            if(moderotation == 0) {
+                if(r != blank && buttf != blank){
+                    r = eval(r);
+                    buttf = eval(buttf);
+                    vf = r * buttf;
+                }
+                
+                if(vi != blank && a != blank && d !=blank) {
+                    vi = eval(vi);
+                    a = eval(a);
+                    d = eval(d);
+                    vf = Math.sqrt(Math.pow(vi,2) + 2 * a * d);
+                }
+                
+                if(vi != blank && a != blank && t != blank) {
+                    vi = eval(vi);
+                    a = eval(a);
+                    t = eval(t);
+                    vf = vi + a * t;
+                }
+                
+                document.getElementById("velfLanding").innerHTML = vf;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveDisp() {
+            if(moderotation == 0) {
+                if(r != blank && theta != blank){
+                    r = eval(r);
+                    theta = eval(theta);
+                    d = r * theta;
+                }
+                
+                if(vi != blank && t != blank && a != blank) {
+                    vi = eval(vi);
+                    a = eval(a);
+                    t = eval(t);
+                    d = vi * t + .5 * a * Math.pow(t,2);
+                }
+                
+                if(vi != blank && vf != blank && a != blank) {
+                    vi = eval(vi);
+                    a = eval(a);
+                    vf = eval(vf);
+                    d = (Math.pow(vf,2) - Math.pow(vi,2)) / (2 * a);
+                }
+                
+                if(v != blank && t != blank) {
+                    v = eval(v);
+                    t = eval(t);
+                    d = v * t;
+                }
+                
+                document.getElementById("dispLanding").innerHTML = d;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                if(ds != blank) {
+                    s = math.integral(ds);
+                }
+                
+                if(dv != blank) {
+                    s = math.integral(math.integral(dv));
+                }
+                
+                document.getElementById("dispCLanding").innerHTML = s;
+                return;
+            }
+        }
+        
+        function solveMass() {
+            if(moderotation == 0) {
+                if(I != blank && r != blank) {
+                    I = eval(I);
+                    r = eval(r);
+                    m = I / Math.pow(r,2);
+                }
+                
+                if(F != blank && a != blank) {
+                    F = eval(F);
+                    a = eval(a);
+                    m = F / a;
+                }
+                
+                document.getElementById("massLanding").innerHTML = m;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveForce() {
+            if(moderotation == 0) {
+                if(m != blank && a != blank) {
+                    m = eval(m);
+                    a = eval(a);
+                    F = m * a;
+                }
+                
+                document.getElementById("forceLanding").innerHTML = F;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveRad() {
+            if(moderotation == 0) {
+                if(d != blank && theta != blank){
+                    d = eval(d);
+                    theta = eval(theta);
+                    r = d / theta;
+                }
+                
+                if(v != blank && butt != blank){
+                    v = eval(v);
+                    butt = eval(butt);
+                    r = v / butt;
+                }
+                
+                if(vf != blank && buttf != blank){
+                    vf = eval(vf);
+                    buttf = eval(buttf);
+                    r = vf / buttf;
+                }
+                
+                if(vi != blank && butti != blank){
+                    vi = eval(vi);
+                    butti = eval(butti);
+                    r = vi / butti;
+                }
+                
+                if(a != blank && alpha != blank){
+                    a = eval(a);
+                    alpha = eval(alpha);
+                    r = a / alpha;
+                }
+                
+                document.getElementById("radLanding").innerHTML = r;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveRev() {
+            if(moderotation == 0) {
+                if(r != blank && d != blank) {
+                    r = eval(r);
+                    d = eval(d);
+                    rev = d / (2 * Math.PI * r);
+                }
+                
+                if(t != blank && revps != blank) {
+                    t = eval(t);
+                    revps = eval(revps);
+                    rev = revps * t;
+                }
+                
+                if(r != blank && v != blank && t != blank) {
+                    r = eval(r);
+                    v = eval(v);
+                    t = eval(t);
+                    rev = (v / (2 * Math.PI * r)) * t;
+                }
+                
+                document.getElementById("revLanding").innerHTML = rev;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveRevps() {
+            if(moderotation == 0) {
+                if(rev != blank && t != blank) {
+                    rev = eval(rev);
+                    t = eval(t);
+                    revps = rev / t;
+                }
+                
+                if(r != blank && v != blank) {
+                    r = eval(r);
+                    v = eval(v);
+                    revps = v / (2 * Math.PI * r);
+                }
+                
+                document.getElementById("revpsLanding").innerHTML = revps;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveTime() {
+            if(moderotation == 0) {
+                if(vi != blank && d != blank && a != blank) {
+                    vi = eval(vi);
+                    d = eval(d);
+                    a = eval(a);
+                    t = (-vi + Math.sqrt(Math.pow(vi,2) - 2 * a * d)) / a;
+                    if(Math.abs(t) != t) {
+                        t = (-vi - Math.sqrt(Math.pow(vi,2) - 2 * a * d)) / a;
+                        if(Math.abs(t) != t) {
+                            t = "DNE";
+                        }
+                    }
+                }
+                
+                if(v != blank && a != blank) {
+                    v = eval(v);
+                    a = eval(a);
+                    t = v / a;
+                }
+                
+                if(vf != blank && vi != blank && a != blank) {
+                    vf = eval(vf);
+                    vi = eval(vi);
+                    a = eval(a);
+                    t = (vf - vi) / a;
+                }
+                
+                if(d != blank && v != blank) {
+                    d = eval(d);
+                    v = eval(v);
+                    t = d / v;
+                }
+                
+                if(butti != blank && theta != blank && alpha != blank) {
+                    butti = eval(butti);
+                    theta = eval(theta);
+                    alpha = eval(alpha);
+                    t = (-butti + Math.sqrt(Math.pow(butti,2) - 2 * alpha * theta)) / alpha;
+                    if(Math.abs(t) != t) {
+                        t = (-butti - Math.sqrt(Math.pow(butti,2) - 2 * alpha * theta)) / alpha;
+                        if(Math.abs(t) != t) {
+                            t = "DNE";
+                        }
+                    }
+                }
+                
+                if(butt != blank && alpha != blank) {
+                    butt = eval(butt);
+                    alpha = eval(alpha);
+                    t = butt / alpha;
+                }
+                
+                if(buttf != blank && butti != blank && alpha != blank) {
+                    buttf = eval(buttf);
+                    butti = eval(butti);
+                    alpha = eval(alpha);
+                    t = (buttf - butti) / alpha;
+                }
+                
+                if(theta != blank && butt != blank) {
+                    theta = eval(theta);
+                    butt = eval(butt);
+                    t = theta / butt;
+                }
+                
+                document.getElementById("timeLanding").innerHTML = t;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveAngAcc() {
+            if(moderotation == 0) {
+                if(r != blank && a != blank) {
+                    r = eval(r);
+                    a = eval(a);
+                    alpha = a * r;
+                }
+                if(butt != blank && t != blank){
+                    butt = eval(butt);
+                    t = eval(t);
+                    alpha = butt / t;
+                }
+                
+                if(buttf != blank && butti != blank && t != blank) {
+                    buttf = eval(buttf);
+                    butti = eval(butti);
+                    t = eval(t);
+                    alpha = (buttf - butti) / t;
+                }
+                
+                if(butti != blank && theta != blank && t != blank) {
+                    butti = eval(butti);
+                    theta = eval(theta);
+                    t = eval(t);
+                    alpha = (theta - butti * t) / (.5 * Math.pow(t,2));
+                }
+                
+                if(buttf != blank && butti != blank && theta != blank) {
+                    buttf = eval(buttf);
+                    butti = eval(butti);
+                    theta = eval(theta);
+                    alpha = (Math.pow(buttf,2) - Math.pow(butti,2)) / (2 * theta);
+                }
+                
+                document.getElementById("angaccLanding").innerHTML = alpha;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                if(dtheta != blank) {
+                    dbutt = math.derivative(dtheta);
+                }
+                
+                if(theta != blank) {
+                    dbutt = math.derivative(math.derivative(theta));
+                }
+                
+                document.getElementById("angaccCLanding").innerHTML = dbutt;
+                return;
+            }
+        }
+        
+        function solveButt() {
+            if(moderotation == 0) {
+                if(v != blank && r != blank) {
+                    v = eval(v);
+                    r = eval(r);
+                    butt = v / r;
+                }
+                
+                if(theta != blank && t != blank) {
+                    theta = eval(theta);
+                    t = eval(t);
+                    butt = theta / t;
+                }
+                
+                document.getElementById("buttLanding").innerHTML = butt;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                if(dbutt != blank) {
+                    dtheta = math.integral(dbutt);
+                }
+                
+                if(theta != blank) {
+                    dtheta = math.derivative(theta);
+                }
+                
+                document.getElementById("buttCLanding").innerHTML = dtheta;
+            }
+        }
+        
+        function solveButti() {
+            if(moderotation == 0) {
+                if(theta != blank && alpha != blank && t != blank) {
+                    theta = eval(theta);
+                    alpha = eval(alpha);
+                    t = eval(t);
+                    butti = (theta - .5 * alpha * Math.pow(t,2))/t;
+                }
+                
+                if(theta != blank && alpha != blank && buttf != blank) {
+                    theta = eval(theta);
+                    alpha = eval(alpha);
+                    buttf = eval(buttf);
+                    butti = Math.sqrt(Math.pow(buttf,2) - 2 * alpha * theta);
+                }
+                
+                if(buttf != blank && alpha != blank && t != blank) {
+                    buttf = eval(buttf);
+                    alpha = eval(alpha);
+                    t = eval(t);
+                    butti = buttf - alpha * t;
+                }
+                
+                document.getElementById("buttiLanding").innerHTML = butti;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveButtf() {
+            if(moderotation == 0) {
+                if(v != blank && r != blank) {
+                    v = eval(v);
+                    r = eval(r);
+                    buttf = v / r;
+                }
+                
+                if(theta != blank && t != blank) {
+                    theta = eval(theta);
+                    t = eval(t);
+                    buttf = theta / t;
+                }
+                
+                if(butti != blank && alpha != blank && t != blank) {
+                    butti = eval(butti);
+                    alpha = eval(alpha);
+                    t = eval(t);
+                    buttf = butti + alpha * t;
+                }
+                
+                document.getElementById("buttfLanding").innerHTML = buttf;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveIner() {
+            if(moderotation == 0) {
+                if(m != blank && r != blank){
+                    m = eval(m);
+                    r = eval(r);
+                    I = m * Math.pow(r,2);
+                }
+                
+                if(KEr != blank && butt != blank) {
+                    KEr = eval(KEr);
+                    butt = eval(butt);
+                    I = (2 * KEr) / Math.pow(butt, 2);
+                }
+                
+                if(L != blank && butt != blank) {
+                    L = eval(L);
+                    butt = eval(butt);
+                    I = L / butt;
+                }
+                
+                if(Tau != blank && alpha != blank) {
+                    Tau = eval(Tau);
+                    alpha = eval(alpha);
+                    I = Tau / alpha;
+                }
+                
+                document.getElementById("inerLanding").innerHTML = I;
+            }
+            
+            
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveTorq() {
+            if(moderotation == 0) {
+                if(alpha != blank && I != blank){
+                    alpha = eval(alpha);
+                    I = eval(I);
+                    Tau = I * alpha;
+                }
+                
+                if(r != blank && F != blank && theta != blank){
+                    r = eval(r);
+                    F= eval(F);
+                    theta = eval(theta);
+                    Tau = r * F * Math.sin(theta * Math.PI / 180);
+                }
+                
+                if(r != blank && F != blank && theta == blank) {
+                    r = r.split(",");
+                    F = F.split(",");
+                    Tau = math.cross(r,F);
+                }
+                
+                if(Wr != blank && theta != blank) {
+                    Wr = eval(Wr);
+                    theta = eval(theta);
+                    Tau = Wr / theta;
+                }
+                
+                document.getElementById("torqLanding").innerHTML = Tau;
+                return;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveAng() {
+            if(moderotation == 0) {
+                if(d != blank && r != blank) {
+                    d = eval(d);
+                    r = eval(r);
+                    theta = d / r;
+                }
+                
+                if(butt != blank && t != blank) {
+                    butt = eval(butt);
+                    t = eval(t);
+                    theta = butt * t;
+                }
+                
+                if(butti != blank && alpha != blank && t != blank) {
+                    butti = eval(butti);
+                    alpha = eval(alpha);
+                    t = eval(t);
+                    theta = butti * t + .5 * alpha * Math.pow(t,2);
+                }
+                
+                if(butti != blank && buttf != blank && alpha != blank && t != blank) {
+                    butti = eval(butti);
+                    buttf = eval(buttf);
+                    alpha = eval(alpha);
+                    t = eval(t);
+                    theta = (Math.pow(buttf,2) - Math.pow(butti,2)) / (2 * alpha);
+                }
+                
+                if(Wr != blank && Tau != blank) {
+                    Wr = eval(Wr);
+                    Tau = eval(Tau);
+                    theta = Wr / Tau;
+                }
+                
+                document.getElementById("angLanding").innerHTML = theta;
+            }
+            
+            if(moderotation == 1) {
+                if(dbutt != blank) {
+                    theta = math.integral(math.integral(dbutt));
+                }
+                
+                if(dtheta != blank) {
+                    theta = math.integral(dtheta);
+                }
+                
+                document.getElementById("angCLanding").innerHTML = theta;
+                return;
+            }
+        }
+        
+        function solveMom() {
+            if(moderotation == 0) {
+                if(m != blank && v != blank) {
+                    m = eval(m);
+                    v = eval(v);
+                    p = m * v;
+                }
+                
+                if(m != blank && vi != blank) {
+                    m = eval(m);
+                    vi = eval(vi);
+                    p = m * vi;
+                }
+                
+                if(m != blank && vf != blank) {
+                    m = eval(m);
+                    vf = eval(vf);
+                    p = m * vf;
+                }
+                
+                document.getElementById("momLanding").innerHTML = p;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveAngWork() {
+            if(moderotation == 0) {
+                if(Tau != blank && theta != blank) {
+                    Tau = eval(Tau);
+                    theta = eval(theta);
+                    Wr = Tau * theta;
+                }
+                
+                document.getElementById("angworkLanding").innerHTML = Wr;
+            }
+            
+            if(moderotation == 1) {
+                if(Tau != blank) {
+                    Wr = math.integral(Tau);
+                }
+                
+                document.getElementById("angworkCLanding").innerHTML = Wr;
+                return;
+            }
+        }
+        
+        function solveAngEnergy() {
+            if(moderotation == 0) {
+                if(I != blank && butt != blank) {
+                    I = eval(I);
+                    butt = eval(butt);
+                    KEr = .5 * I * Math.pow(butt,2);
+                }
+                
+                document.getElementById("angenergyLanding").innerHTML = KEr;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveAngMom() {
+            if(moderotation == 0) {
+                if(I != blank && butt != blank) {
+                    I = eval(I);
+                    butt = eval(butt);
+                    L = I * butt;
+                }
+                
+                if(r != blank && p != blank && theta != blank) {
+                    r = eval(r);
+                    p = eval(p);
+                    theta = eval(theta);
+                    L = r * p * Math.sin(theta * Math.PI / 180);
+                }
+                
+                if(r != blank && p != blank && theta == blank) {
+                    r = r.split(",");
+                    p = p.split(",");
+                    L = math.cross(r,p);
+                }
+                
+                document.getElementById("angmomLanding").innerHTML = L;
+            }
+            
+            if(moderotation == 1) {
+                
+            }
+        }
+        
+        function solveAngImpulse() {
+            if(moderotation == 0) {
+                if(I != blank && butti != blank && buttf != blank) {
+                    I = eval(I);
+                    butti = eval(butti);
+                    buttf = eval(buttf);
+                    Im = I * buttf - I * butti;
+                }
+                
+                if(Tau != blank && t != blank) {
+                    Tau = eval(Tau);
+                    t = eval(t);
+                    Im = Tau * t;
+                }
+                
+                document.getElementById("angimLanding").innerHTML = Im;
+            }
+        }
+    </script>
+</body>
+</html>

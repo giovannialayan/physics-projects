@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>rocket science</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+    
+    <style>
+      div.set{
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+      }
+      
+      table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          font-family:arial;
+      }
+      
+      th, td {
+          padding: 0px 10px 0px 0px;
+      }
+    </style>
+</head>
+<body onload="background()">
+    <div class="set">
+    <div>
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <p>Here are 6 numbers, use them to put a rocket into orbit</p>
+    <p>In order for a rocket to stay in orbit you have to make sure that by the time it reaches an altitude of 2000000 meters it has<br/> a velocity of at least 7600 meters per second</p>
+    <br/>
+    <form id="input">
+        <pre>
+                exhaust velocity (m/s) = <input type="text" value="4856"><br/>
+                   mass of rocket (kg) = <input type="text" value="0.73e6"><br/>
+                     mass of fuel (kg) = <input type="text" value="2.04e6"><br/>
+rate at which fuel is exhuasted (kg/s) = <input type="text" value="13600"><br/>
+                      drag coefficient = <input type="text" value="0.04"><br/>
+            cross sectional area (m^2) = <input type="text" value="79.4598"><br/>
+                 <!--change in time = <input type="text" value="1">-->
+        </pre>
+    </form>
+    <div>
+    <button onclick="initialize()">lift off</button>
+    <button onclick="changeState()">disable animation</button>
+    </div>
+    <br/><br/>
+    <table id="tstep">
+        <tr>
+        <th>time (s)</th>
+        <th>height (m)</th>
+        <th>velocity (m/s)</th>
+        <th>acceleration (m/s^2)</th>
+        </tr>
+    </table>
+    </div>
+    <canvas id="anim" width="600" height="600" style="border:1px solid #D3D3D3; margin-left:100px;">
+        your browser does not support canvas format</canvas>
+    </div>
+      
+<script>
+    //constants
+    var e = 2.71828182845904523;
+    var Me = 5.972e24;
+    var Re = 6.3781e6;
+    var pi = 1.225;
+    var G = 6.67e-11;
+    var H = 2000000;
+    var Ha = 100000;
+    //input
+    var vex;
+    var mr;
+    var mf;
+    var dm;
+    var D;
+    var A;
+    var tstep = 1;
+    //output
+    var y = 0;
+    var a = 0;
+    var v = 0;
+    var t = 0;
+    var k;
+    var g;
+    
+    //table
+    var table = document.getElementById("tstep");
+    var row = {};
+    var tCell = {};
+    var yCell = {};
+    var vCell = {};
+    var aCell = {};
+    var rowNumber = 1;
+    
+    //animation
+    var canvas = document.getElementById("anim");
+    var anim = canvas.getContext("2d");
+    var angle = 0;
+    var alt = 0;
+    var hor = 0;
+    var yhat = 0;
+    var ahat = 0;
+    var n = 0;
+    var frame;
+    var theight = new Array();
+    var tacc = new Array();
+    var interval;
+    var state = 1;
+    var angleCon = 5000;
+    var altCon = -2700;
+    
+    var crashes = 0;
+    var y1 = 0;
+    var a1 = 0;
+    var garbage = 0;
+    var fuck;
+    
+    var n;
+    var psi0 = .5;
+    var dpsi = psi0 / 100;
+    var psi = 0;
+    var z0 = 0;
+    var z = 0;
+    var c = 0;
+    var vt = 0;
+    var v0 = 0;
+    var dx = 0;
+    var x = 0;
+    var x0 = 0;
+    var y0 = 0;
+    var dy = 0;
+    var dt = 1;
+    var t0 = 0;
+    
+    function initialize() {
+        if(table.rows.length > 1){clearTable();}
+        vex = parseFloat(document.getElementById("input").elements[0].value);
+        mr = parseFloat(document.getElementById("input").elements[1].value);
+        mf = parseFloat(document.getElementById("input").elements[2].value);
+        dm = parseFloat(document.getElementById("input").elements[3].value);
+        D = parseFloat(document.getElementById("input").elements[4].value);
+        A = parseFloat(document.getElementById("input").elements[5].value);
+        //tstep = parseFloat(document.getElementById("input").elements[6].value);
+        liftoff();
+    }
+    
+    function liftoff() {
+        while(y < H) {
+            v+= a;
+            y+= v;
+            a = ((vex * dm) - (G * Me * getMass()) / Math.pow((y + Re),2) - ((D * (pi * Math.pow(e,-y / H)) * A)/2) * Math.pow(v,2)) / getMass();
+            step();
+            if(Math.abs(a1-a) < .001 && D > 2.3){shitRocket();  console.log("acceleration error"); break;}
+            if(y-y1 < 0){shitRocket(); fuck = "height error"; console.log(fuck); break;}
+            if(v > 11200){shitRocket(); fuck = "speed error 1"; console.log(fuck); break;}
+            y1 = y;
+            a1 = a;
+        }
+        if(v < 7600 && y >= H){shitRocket(); fuck = "speed error 2"; console.log(fuck);}
+        if(state == 1) {
+            getHeights();
+            checkGarbo();
+            interval = setInterval(goup, 1000/60);
+        }
+    }
+    
+    function getMass() {
+        var mtotal = mr + mf - dm * t;
+        if(mtotal < mr){mtotal = mr;}
+        return mtotal;
+    }
+    
+    function step() {
+             row = table.insertRow(rowNumber);
+             tCell = row.insertCell(0);
+             yCell = row.insertCell(1);
+             vCell = row.insertCell(2);
+             //vxCell = row.insertCell(3);
+             aCell = row.insertCell(3);
+             tCell.innerHTML = t;
+             yCell.innerHTML  = y;
+             angle = (y/H) * 89 + .5;
+             //console.log(angle);
+             //console.log(t + ": " + v);
+             vCell.innerHTML = v;
+             //vxCell.innerHTML = Math.trunc((v/Math.cos(angle)) * 1e6) / 1e6;
+             aCell.innerHTML = a;
+             t += tstep;
+             rowNumber++;
+         }
+         
+    function clearTable() {
+        while(table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+        rowNumber = 1;
+        t = 0;
+        a = 0;
+        v = 0;
+        y = 0;
+    }
+    
+    function background() {
+        var grad = anim.createLinearGradient(300,580,300,50);
+        grad.addColorStop(0,"#8EE5EE");
+        grad.addColorStop(1,"#123456");
+        anim.beginPath();
+        anim.fillStyle = grad;
+        anim.fillRect(0,0,600,580);
+        anim.fill();
+        anim.fillStyle = "#4cc139";
+        anim.fillRect(0,580,600,20);
+        anim.fill();
+        anim.strokeStyle = "#FF00FF";
+        anim.arc(600,580,542,Math.PI,1.5 * Math.PI);
+        anim.stroke();
+        rocket();
+        
+        if(sessionStorage.getItem("crashes") == null){sessionStorage.setItem("crashes",crashes);}
+        crashes = sessionStorage.getItem("crashes");
+    }
+    
+    function goup() {
+        if(angle * Math.PI / 180 >= 1.5 * Math.PI){clearInterval(interval);}
+        yhat = parseFloat(theight[n]);
+        ahat = parseFloat(theight[n]);
+        angle = (yhat / H) * angleCon;
+        alt = (yhat / H) * altCon - 70;
+        hor = (yhat / H) * 600;
+        background();
+        n++;
+    }
+    
+    function rocket() {
+        // anim.beginPath();
+        // anim.fillStyle = "#BFBFBF";
+        // anim.fillRect(250,250,100,150);
+        // anim.moveTo(250,250);
+        // anim.lineTo(300,200);
+        // anim.lineTo(350,250);
+        // anim.fill();
+        // anim.fillStyle = "#E1E1E1";
+        // anim.moveTo(350,350);
+        // anim.arcTo(450,400,175,550,60);
+        // anim.moveTo(250,350);
+        // anim.arcTo(150,400,425,550,60);
+        // anim.fill();
+        
+        anim.save();
+        anim.translate(600,580);
+        anim.rotate(angle * Math.PI / 180);
+        anim.translate(-600,20);
+        
+        anim.beginPath();
+        anim.fillStyle = "#BFBFBF";
+        anim.fillRect(hor + 50,alt + 10,20,30);
+        anim.moveTo(hor + 50,alt + 10);
+        anim.lineTo(hor + 60,alt);
+        anim.lineTo(hor + 70,alt + 10);
+        anim.fill();
+        anim.fillStyle = "#E1E1E1";
+        anim.moveTo(hor + 70,alt + 30);
+        anim.arcTo(hor + 90,alt + 40,hor + 35,alt + 70,12);
+        anim.moveTo(hor + 50,alt + 30);
+        anim.arcTo(hor + 30,alt + 40,hor + 85,alt + 70,12);
+        anim.closePath()
+        anim.fill();
+        anim.restore();
+    }
+    
+    function getHeights() {
+        for(var i = 1; row = table.rows[i]; i++) {
+            theight[i-1] = table.rows[i].cells[1].innerHTML;
+            tacc[i-1] = table.rows[i].cells[3].innerHTML;
+        }
+        theight[theight.length-1] = H;
+        tacc[0] = 0;
+    }
+    
+    function changeState() {
+        state = state * -1;
+        anim.canvas.width=600;
+    }
+    
+    function shitRocket() {
+        crashes++;
+        var cost = crashes * 7.14;
+        alert("Your rocket is garbage. You have destroyed " + crashes + " rockets, which has cost you " + cost + " billion dollars.")
+        sessionStorage.removeItem("crashes");
+        sessionStorage.setItem("crashes", crashes);
+        if(fuck == "speed error1"){garbage = 1;}
+        if(fuck == "speed error2"){garbage = 2;}
+        if(fuck == "height error"){garbage = 1;}
+        if(fuck == "acceleration error"){garbage = 1;}
+    }
+    
+    function checkGarbo() {
+        if(garbage == 1) {
+            angleCon = 300;
+            altCon = -100;
+            fps = 120;
+        }
+        if(garbage == 2) {
+            angleCon = 10000;
+            altCon = -5400;
+            fps = 10;
+        }
+        if(garbage == 0) {
+            angleCon = 5000;
+            altCon = -2700;
+            fps = 30;
+        }
+    }
+    
+    function getTanVel() {
+        n = (a * getMass()) / ((G * Me * getMass()) / Math.pow((y + Re),2));
+        console.log("n = " + n);
+        z0 = (Math.tan(.5 * (psi0 * Math.PI / 180)));
+        console.log("z0 = " + z0);
+        c = (vex/(Math.pow(z0,n-1) * Math.pow(1+z0,2)));
+        console.log("c = " + c);
+        psi = (psi0 + dpsi);
+        console.log("psi = " + psi);
+        z = Math.tan(.5 * (psi * Math.PI / 180));
+        console.log("z = " + z);
+        v = (c * Math.pow(z,n-1)) * (1 + Math.pow(z,2));
+        console.log("v = " + v);
+        dt = (c/((G * Me / Math.pow((y + Re),2)))) * (Math.pow(z,n-1) * ((1 / (n-1)) * (Math.pow(z,2) / (n+1))) - Math.pow(z0,n-1) * ((1 / (n-1)) * (Math.pow(z0,2) / (n+1))));
+        console.log("dt = " + dt);
+        dx = .5 * (vex * Math.sin(psi0 * Math.PI / 180) + v * Math.sin(psi * Math.PI / 180)) * dt;
+        console.log("dx = " + dx);
+        dy = .5 * (vex * Math.cos(psi0 * Math.PI / 180) + v * Math.cos(psi * Math.PI / 180)) * dt;
+        console.log("dy = " + dy);
+        x = x0 + dx;
+        console.log("x = " + x);
+        y = y0 + dy;
+        console.log("y = " + y);
+        x0 = x;
+        y0 = y;
+        psi0 = psi;
+        t0 = t + dt;
+    }
+</script>
+</body>
+</html>

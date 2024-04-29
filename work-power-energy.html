@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        work power energy
+    </title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+
+    <style>        
+        .pageDisp {
+            display: none;
+        }
+        
+        div.set{
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+        }
+    </style>
+    <script src="js-libraries/nerdamer.core.js"></script>
+    <script src="js-libraries/Algebra.js"></script>
+    <script src="js-libraries/Calculus.js"></script>
+    <script src="js-libraries/Solve.js"></script>
+    <script src="js-libraries/Extra.js"></script>
+    <script src="js-libraries/algebrite.bundle-for-browser.js"></script>
+</head>
+<body onload="start()">
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <div id="nonCalc">
+    <div class="set">
+    <div>
+        <!--<button type="button" onclick="goToCalc()">switch to calculus</button>-->
+        <br/>
+        <p class="text">only input the fields that apply to what you are trying to solve</p>
+        <p class="text">check off the field you want to solve for</p>
+        <br/>
+        <form id="nonCalcForm">
+            <pre>
+ m = <input type="text" value=""><br/>
+ v = <input type="text" value=""><br/>
+ F = <input type="text" value=""><br/>
+ d = <input type="text" value=""><br/>
+ t = <input type="text" value=""><br/>
+ U = <input type="text" value=""><br/>
+KE = <input type="text" value=""><br/>
+ W = <input type="text" value=""><br/>
+ P = <input type="text" value=""><br/>
+            </pre>
+        </form>
+        <br/>
+        <pre>
+<a onclick="calculateNonCalc();  solveMass()">            mass = </a><span id="massLanding"></span><br>
+<a onclick="calculateNonCalc();   solveVel()">        velocity = </a><span id="velLanding"></span><br>
+<a onclick="calculateNonCalc(); solveForce()">           force = </a><span id="forceLanding"></span><br>
+<a onclick="calculateNonCalc();  solveDisp()">    displacement = </a><span id="dispLanding"></span><br>
+<a onclick="calculateNonCalc();  solveTime()">            time = </a><span id="timeLanding"></span><br>
+<a onclick="calculateNonCalc();   solvePot()">potential energy = </a><span id="potLanding"></span><br>
+<a onclick="calculateNonCalc();   solveKin()">  kinetic energy = </a><span id="kinLanding"></span><br>
+<a onclick="calculateNonCalc();  solveWork()">            work = </a><span id="workLanding"></span><br>
+<a onclick="calculateNonCalc();   solvePow()">           power = </a><span id="powLanding"></span><br>
+        </pre>
+    </div>
+    <div id="withCalc" class="pageDisp">
+
+    </div>
+    <div class="text" style="margin-left:5em;">
+        <p>energy</p>
+        <p>input the known variables in this format: m=2,v=8,h=1</p>
+        <form id="forces">
+        <pre>
+equation: <input type="text"><br/>
+  knowns: <input type="text" value=""><br/>
+ unknown: <input type="text"><br/>
+        </pre>
+        </form>
+        
+        <button type="button" onclick="solve()">solve</button>
+        <br/>
+        <p id="solved"></p>
+        <p id="solvedN"></p>
+    </div>
+    </div>
+    </div>
+    
+    <script>
+        //work power energy
+        var m;
+        var v;
+        var F;
+        var d;
+        var t;
+        var U;
+        var KE;
+        var W;
+        var P;
+
+        //backend
+        var blank = '';
+
+        function start() {
+            modewpe = sessionStorage.getItem("modewpe");
+            if(modewpe != 1) {
+                goToNonCalc();
+            }
+            if(modewpe == 1) {
+                goToCalc();
+            }
+        }
+        
+        function goToNonCalc() {
+            document.getElementById("withCalc").style.display = "none";
+            document.getElementById("nonCalc").style.display = "block";
+            modewpe = 0;
+            sessionStorage.removeItem("modewpe");
+            sessionStorage.setItem("modewpe",modewpe);
+        }
+        
+        function goToCalc() {
+            document.getElementById("nonCalc").style.display = "none";
+            document.getElementById("withCalc").style.display = "block";
+            modewpe = 1;
+            sessionStorage.removeItem("modewpe");
+            sessionStorage.setItem("modewpe",modewpe);
+        }
+        
+        function calculateNonCalc() {
+            m = document.getElementById("nonCalcForm").elements[0].value;
+            v = document.getElementById("nonCalcForm").elements[1].value;
+            F = document.getElementById("nonCalcForm").elements[2].value;
+            d = document.getElementById("nonCalcForm").elements[3].value;
+            t = document.getElementById("nonCalcForm").elements[4].value;
+            U = document.getElementById("nonCalcForm").elements[5].value;
+            KE = document.getElementById("nonCalcForm").elements[6].value;
+            W = document.getElementById("nonCalcForm").elements[7].value;
+            P = document.getElementById("nonCalcForm").elements[8].value;
+        }
+        
+        function solveMass() {
+            if(v != blank && KE != blank) {
+                v = eval(v);
+                KE = eval(KE);
+                m = 2 * KE / Math.pow(v,2);
+            }
+            
+            if(U != blank && d != blank) {
+                m = eval(m);
+                U = eval(U);
+                m = U / (g * d);
+            }
+            
+            document.getElementById("massLanding").innerHTML = m;
+            return;
+        }
+        
+        function solveVel() {
+            if(F != blank && P != blank) {
+                F = eval(F);
+                P = eval(P);
+                v = P / F;
+            }
+            
+            if(KE != blank && m != blank) {
+                v = eval(v);
+                KE = eval(KE);
+                v = Math.srt(2 * KE / m);
+            }
+            
+            document.getElementById("velLanding").innerHTML = v;
+            return;
+        }
+        
+        function solveForce() {
+            if(P != blank && d != blank && t != blank) {
+                P = eval(P);
+                d = eval(d);
+                t = eval(t);
+                F = P * t / d;
+            }
+            
+            if(P != blank && v != blank) {
+                P = eval(P);
+                v = eval(v);
+                F = P / v;
+            }
+            
+            if(W != blank && d != blank && theta == blank) {
+                W = eval(W);
+                d = eval(d);
+                F = W / d;
+            }
+            
+            if(W != blank && d != blank && theta != blank) {
+                W = eval(W);
+                d = eval(d);
+                theta = eval(theta);
+                F = W / (d * Math.cos(theta));
+            }
+            
+            document.getElementById("forceLanding").innerHTML = F;
+            return;
+        }
+        
+        function solveDisp() {
+            if(F != blank && P != blank && t != blank) {
+                F = eval(F);
+                P = eval(P);
+                t = eval(t);
+                d = P * t / F;
+            }
+            
+            if(F != blank && W != blank && theta == blank) {
+                F = eval(F);
+                W = eval(W);
+                d = W / F;
+            }
+            
+            if(F != blank && W != blank && theta != blank) {
+                F = eval(F);
+                W = eval(W);
+                theta = eval(theta);
+                d = W / (F * Math.cos(theta));
+            }
+            
+            if(m != blank && U != blank) {
+                m = eval(m);
+                U = eval(U);
+                d = U / m * g;
+            }
+            
+            document.getElementById("dispLanding").innerHTML = d;
+            return;
+        }
+        
+        function solveTime() {
+            if(W != blank && P != blank) {
+                W = eval(W);
+                P = eval(P);
+                t = W / P;
+            }
+            
+            if(F != blank && d != blank && P != blank) {
+                F = eval(F);
+                d = eval(d);
+                P = eval(P);
+                t = F * d / P;
+            }
+            
+            document.getElementById("timeLanding").innerHTML = t;
+            return;
+            }
+            
+            function solvePot() {
+                if(m != blank && d != blank) {
+                m = eval(m);
+                d = eval(d);
+                U = m * g * d;
+            }
+            
+            document.getElementById("potLanding").innerHTML = U;
+            return;
+        }
+        
+        function solveKin() {
+            if(v != blank && m != blank) {
+                v = eval(v);
+                m = eval(m);
+                KE = .5 * m * Math.pow(v,2);
+            }
+            
+            document.getElementById("kinLanding").innerHTML = KE;
+            return;
+        }
+        
+        function solveWork() {
+            if(F != blank && d != blank && theta == blank) {
+                F = eval(F);
+                d = eval(d);
+                W = F * d;
+            }
+            
+            if(F != blank && d != blank && theta != blank) {
+                F = eval(F);
+                d = eval(d);
+                theta = eval(theta);
+                W = F * d * Math.cos(theta);
+            }
+            
+            if(P != blank && t != blank) {
+                P = eval(P);
+                t = eval(t);
+                W = P * t;
+            }
+            
+            document.getElementById("workLanding").innerHTML = W;
+            return;
+        }
+        
+        function solvePow() {
+            if(W != blank && t != blank) {
+                W = eval(W);
+                t = eval(t);
+                P = W / t;
+            }
+            
+            if(F != blank && d != blank && t != blank) {
+                F = eval(F);
+                d = eval(d);
+                t = eval(t);
+                P = F * d / t;
+            }
+            
+            if(F != blank && v != blank) {
+                F = eval(F);
+                v = eval(v);
+                P = F * v;
+            }
+            
+            document.getElementById("powLanding").innerHTML = P;
+            return;
+        }
+        
+        function solve() {
+            equation = document.getElementById("forces").elements[0].value
+            unknown = document.getElementById("forces").elements[2].value
+            solution = Algebrite.simplify(nerdamer(equation).solveFor(unknown).toString()).toString();
+            document.getElementById("solved").innerHTML = unknown + " = " + solution;
+            
+            knowns = document.getElementById("forces").elements[1].value.split(",");
+            if(knowns != "") {
+                var forcesarr = [];
+                var variablesarr = [];
+                var temp = "";
+                for(var i=0; i<knowns.length; i++) {
+                    forcesarr.push(knowns[i].substring(knowns[i].indexOf("=")+1, knowns[i].length));
+                    variablesarr.push(knowns[i].substring(0,knowns[i].indexOf("=")));
+                    console.log(variablesarr[i] + "=" + forcesarr[i]);
+                    solution = solution.replace(variablesarr[i], forcesarr[i]);
+                    console.log(solution);
+                }
+                
+                document.getElementById("solvedN").innerHTML = unknown + " = " + Algebrite.eval(solution).toString();
+            }
+        }
+    </script>
+</body>
+</html>

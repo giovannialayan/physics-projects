@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="shortcut icon" href="">
+    <title>forces</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+    
+    <script src="js-libraries/nerdamer.core.js"></script>
+    <script src="js-libraries/Algebra.js"></script>
+    <script src="js-libraries/Calculus.js"></script>
+    <script src="js-libraries/Solve.js"></script>
+    <script src="js-libraries/Extra.js"></script>
+    <script src="js-libraries/algebrite.bundle-for-browser.js"></script>
+</head>
+<body>
+    <div class="text">
+        <a href="index.html" style="text-decoration:none;">go back</a>
+        <br/><br/>
+        <p>sum of the forces</p>
+        <p>input the known variables in this format: Fg=2,T1=8,a=0</p>
+        <form id="forces">
+        <pre>
+equation: <input type="text"><br/>
+  knowns: <input type="text" value=""><br/>
+ unknown: <input type="text"><br/>
+        </pre>
+        </form>
+        
+        <button type="button" onclick="solve()">solve</button>
+        <br/>
+        <p id="solved"></p>
+        <p id="solvedN"></p>
+    </div>
+    <script>
+        function solve() {
+            equation = document.getElementById("forces").elements[0].value
+            unknown = document.getElementById("forces").elements[2].value
+            solution = Algebrite.simplify(nerdamer(equation).solveFor(unknown).toString()).toString();
+            document.getElementById("solved").innerHTML = unknown + " = " + solution;
+            
+            knowns = document.getElementById("forces").elements[1].value.split(",");
+            if(knowns != "") {
+                var forcesarr = [];
+                var variablesarr = [];
+                var temp = "";
+                for(var i=0; i<knowns.length; i++) {
+                    forcesarr.push(knowns[i].substring(knowns[i].indexOf("=")+1, knowns[i].length));
+                    variablesarr.push(knowns[i].substring(0,knowns[i].indexOf("=")));
+                    console.log(variablesarr[i] + "=" + forcesarr[i]);
+                    solution = solution.replace(variablesarr[i], forcesarr[i]);
+                    console.log(solution);
+                }
+                
+                document.getElementById("solvedN").innerHTML = unknown + " = " + Algebrite.eval(solution).toString();
+            }
+        }
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!doctype html>
+<html>
+<head>
+    <title>oscillation</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+        
+    <style>
+        .pageDisp {
+            display: none;
+        }
+
+		input[type="checkbox"], label {
+			float: left;
+			line-height: 1.2em;
+			height: 1.6em;
+			margin: 0px 2px;
+			padding: 0px;
+			font-size: inherit;
+		}
+
+		input[type = "checkbox"] {
+			clear: left;
+		}
+    </style>
+</head>
+<body>
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <div id="nonCalc">
+        <div class="text">
+            <p>only input the fields that apply to what you are trying to solve</p>
+            <p>click on the value you want to solve for below the inputs</p>
+            <p>check off the type of problem it is</p>
+        </div>
+        <br>
+        <form id="nonCalcForm">
+            <pre>
+m = <input type="text" value=""><br>
+k = <input type="text" value=""><br>
+f = <input type="text" value=""><br>
+r = <input type="text" value=""><br>
+x = <input type="text" value=""><br>
+L = <input type="text" value=""><br>
+I = <input type="text" value=""><br>
+T = <input type="text" value=""><br>
+F = <input type="text" value=""><br>
+&omega; = <input type="text" value="">
+            </pre>
+        </form>
+		
+<input id="smsCheck" type="checkbox" onchange="setProblem('sms')" checked = "true"><label>spring mass system</label><br>
+<input id="penCheck" type="checkbox" onchange="setProblem('pen')"><label>pendulum</label><br>
+<input id="ppCheck" type="checkbox" onchange="setProblem('pp')"><label>physical pendulum</label><br><br><br>
+		
+        <pre>
+<a onclick="calculateNonCalc();     solveMass()">              mass = </a><span id="massLanding"></span><br>
+<a onclick="calculateNonCalc(); solveCoSpring()">spring coefficient = </a><span id="coSpringLanding"></span><br>
+<a onclick="calculateNonCalc();     solveFreq()">         frequency = </a><span id="freqLanding"></span><br>
+<a onclick="calculateNonCalc();      solveRad()">            radius = </a><span id="radLanding"></span><br>
+<a onclick="calculateNonCalc();     solveDist()">          distance = </a><span id="distLanding"></span><br>
+<a onclick="calculateNonCalc();   solveLength()">            length = </a><span id="lengthLanding"></span><br>
+<a onclick="calculateNonCalc();     solveIner()"> moment of inertia = </a><span id="inerLanding"></span><br>
+<a onclick="calculateNonCalc();     solveTime()">            period = </a><span id="periodLanding"></span><br>
+<a onclick="calculateNonCalc();    solveForce()">             force = </a><span id="forceLanding"></span><br>
+<a onclick="calculateNonCalc();  solveAngFreq()"> angular frequency = </a><span id="angFreqLanding"></span><br>
+		</pre>
+    </div>
+<script>
+    //variables
+    var m;
+    var k;
+    var f;
+    var r;
+    var x;
+    var L;
+    var I;
+    var T;
+    var F;
+    var omega;
+
+    //problem type
+    var sms;
+    var pen;
+    var pp;
+
+    //given
+    var g = 9.8;
+
+    //backend
+    modeoscillation = 0;
+    blank = "";
+
+    function start() {
+        modeoscillation = sessionStorage.getItem("modeoscillation");
+        if(modeoscillation != 1) {
+            goToNonCalc();
+        }
+        if(modeoscillation == 1) {
+            goToCalc();
+        }
+    }
+    
+    function goToNonCalc() {
+        document.getElementById("withCalc").style.display = "none";
+        document.getElementById("nonCalc").style.display = "block";
+        sessionStorage.removeItem("modeoscillation");
+        sessionStorage.setItem("modeoscillation", 0);
+        modeoscillation = 0;
+    }
+        
+    function goToCalc() {
+        document.getElementById("nonCalc").style.display = "none";
+        document.getElementById("withCalc").style.display = "block";
+        sessionStorage.removeItem("modeoscillation");
+        sessionStorage.setItem("modeoscillation", 1);
+        modeoscillation = 1;
+    }
+
+    function calculateNonCalc() {
+		m = document.getElementById("nonCalcForm").elements[0].value;
+        k = document.getElementById("nonCalcForm").elements[1].value;
+        f = document.getElementById("nonCalcForm").elements[2].value;
+        r = document.getElementById("nonCalcForm").elements[3].value;
+        x = document.getElementById("nonCalcForm").elements[4].value;
+        L = document.getElementById("nonCalcForm").elements[5].value;
+        I = document.getElementById("nonCalcForm").elements[6].value;
+        T = document.getElementById("nonCalcForm").elements[7].value;
+        F = document.getElementById("nonCalcForm").elements[8].value;
+        omega = document.getElementById("nonCalcForm").elements[9].value;
+    }
+    
+    function setProblem(type) {
+        if(type == "pp") {
+            pp = true;
+            pen = false;
+            sms = false;
+        }
+        else if(type == "pen") {
+            pp = false;
+            pen = true;
+            sms = false;
+        }
+        else {
+            pp = false;
+            pen = false;
+            sms = true;
+        }
+
+        document.getElementById("ppCheck").checked = pp;
+        document.getElementById("penCheck").checked = pen;
+        document.getElementById("smsCheck").checked = sms;
+    }
+
+    function solveMass() {
+		if(T != '' && k != '' && sms == true) {
+			T = eval(T);
+			k = eval(k);
+			m = k / Math.pow(T * 2 * Math.PI,2);
+		}
+		
+		if(T != '' && I != '' && r != '' && pp == true) {
+			T = eval(T);
+			r = eval(r);
+			I = eval(I);
+			m = Math.pow(T / (2 * Math.PI),2) / (I * g * r);
+		}
+		
+		if(k != '' && omega != '') {
+			k = eval(k);
+			omega = eval(omega);
+			m = k / Math.pow(omega,2);
+		}
+		
+		document.getElementById("massLanding").innerHTML = m;
+	}
+	
+	function solveCoSpring() {
+		if(m != '' && T != '' && sms == true) {
+			m = eval(m);
+			T = eval(T);
+			k = m / Math.pow(T * 2 * Math.PI,2);
+		}
+		
+		if(F != '' && r != '') {
+			F = eval(F);
+			x = eval(r);
+			k = -F / x;
+		}
+		
+		if(omega != '' && m != '') {
+			omega = eval(omega);
+			m = eval(m);
+			k = Math.pow(omega,2) * m;
+		}
+		
+		document.getElementById("coSpringLanding").innerHTML = k;
+	}
+	
+	function solveFreq() {
+		if(T != '') {
+			T = eval(T);
+			f = 1 / T;
+		}
+		
+		if(omega != '') {
+			omega = eval(omega);
+			f = omega / 2 * Math.PI;
+		}
+		
+		document.getElementById("freqLanding").innerHTML = f;
+	}
+	
+	function solveRad() {
+		if(m != '' && I != '' && T != '' && pp == true) {
+			m = eval(m);
+			T = eval(T);
+			I = eval(I);
+			r =  I / (Math.pow(T * 2 * Math.PI,2) * m * g);
+		}
+		
+		document.getElementById("radLanding").innerHTML = r;
+	}
+	
+	function solveDist() {
+		if(k != '' && F != '') {
+			k = eval(k);
+			F = eval(F);
+			x = F / -k;
+		}
+		
+		document.getElementById("distLanding").innerHTML = x;
+	}
+	
+	function solveLength() {		
+		if(T != '' && pen == true) {
+			T = eval(T);
+			L = Math.pow(T * 2 * Math.PI,2) * g;
+		}
+		
+		document.getElementById("lengthLanding").innerHTML = L;
+	}
+	
+	function solveIner() {
+		if(m != '' && T != '' && r != '' && pp == true) {
+			m = eval(m);
+			r = eval(r);
+			T = eval(T);
+			I = Math.pow(T / (2 * Math.PI),2) / (m * g * r);
+		}
+		
+		document.getElementById("inerLanding").innerHTML = I;
+	}
+	
+	function solveTime() {
+		if(f != '') {
+			f = eval(f);
+			T = 1 / f;
+		}
+		
+		if(m != '' && k != '' && sms == true) {
+			m = eval(m);
+			k = eval(k);
+			T = 2 * Math.PI * Math.sqrt(m / k);
+		}
+		
+		if(m != '' && I != '' && r != '' && pp == true) {
+			m = eval(m);
+			r = eval(r);
+			I = eval(I);
+			T = 2 * Math.PI * Math.sqrt(I / (m * g * r));
+		}
+		
+		if(r != '' && pen == true) {
+			L = eval(r);
+			T = 2 * Math.PI * Math.sqrt(L / g);
+		}
+		
+		document.getElementById("periodLanding").innerHTML = T;
+	}
+	
+	function solveForce() {
+		if(k != '' && r != '') {
+			k = eval(k);
+			x = eval(r);
+			F = -k * x;
+		}
+		
+		document.getElementById("forceLanding").innerHTML = F;
+	}
+	
+	function solveAngFreq() {
+		if(k != '' && m != '') {
+			k = eval(k);
+			m = eval(m);
+			omega = Math.sqrt(k / m);
+		}
+		
+		if(f != '') {
+			f = eval(f);
+			omega = 2 * Math.PI * f;
+		}
+		
+		document.getElementById("angFreqLanding").innerHTML = omega;
+	}
+</script>
+</body>
+</html>

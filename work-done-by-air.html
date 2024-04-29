@@ -1,0 +1,63 @@
+<!Doctype html>
+<html>
+<head>
+<title>
+    work done by air resistance
+</title>
+<link type="text/css" href="physics-style.css" rel="stylesheet"/>
+
+<style>
+    html {font-family:Arial;}
+</style>
+</head>
+<body>
+    <a href="index.html" style="text-decoration:none;">go back</a>
+    <br/><br/>
+    <form id="input">
+Work done by air resistance calculator<br/><br/>
+            <pre>
+              Distance(m) = <input type="text" value="10" name="distance"><br/><br/>
+       Initial speed(m/s) = <input type="text" value="2" name="speed"><br/><br/>
+                 Mass(kg) = <input type="text" value=".5" name="mass"><br/><br/>
+         Drag coefficient = <input type="text" value="2.1" name="drag"><br/><br/>
+      Air desnity(kg/m^3) = <input type="text" value="1.225" name="air"><br/><br/>
+Cross sectional area(m^2) = <input type="text" value=".488" name="area"><br/><br/></pre>
+    </form>
+    <button type="button" onclick="workAir()">Do work</button>
+    <p id="workAir"></p>
+    
+    <br/><br/><br/><br/><br/>
+    
+    <img src="workair.jpg">
+<script>
+    
+    var x = document.getElementById("input");
+    var e = 2.7182818284590452;
+    
+    function workAir() {
+        var d = x.elements[0].value;
+        var v = x.elements[1].value;
+        var m = x.elements[2].value;
+        var drag = x.elements[3].value;
+        var p = x.elements[4].value;
+        var area = x.elements[5].value;
+        var k = (drag * p * area) / (2 * m);
+        var workDone = "Work done by air resistance(J) = " + ((((v * Math.pow(e,-2 * k * d)) / (-2 * k)) - ((v * Math.pow(e,-2 * k * 0)) / (-2 * k))) * (-k * m));
+        document.getElementById("workAir").innerHTML = workDone;
+    }
+    
+    
+    
+    
+    // trying to make a definite integral calculator omegalul
+    // function simpson() {
+    //     var force = x.elements[0].value;
+    //     var a = x.elements[1].value;
+    //     var b = x.elements[2].value;
+    //     var h = (b-a)/100
+    //     var work = "" + for(i,1,100) {}
+    //     //look at this shit https://codepen.io/Thisisntme/pen/mEbvXE
+    // }
+</script>
+</body>
+</html>

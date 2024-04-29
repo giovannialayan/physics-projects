@@ -1,0 +1,16 @@
+.text {
+	font-family: Arial, sans-serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+a, a:link, a:visited {
+	color: blue;
+}
+
+a:hover {
+	color: #03e7fc;
+	cursor: pointer;
+}

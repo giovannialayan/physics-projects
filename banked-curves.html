@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            banked curves
+        </title>
+        <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+        
+        <style>
+            html {font-family:Arial;}
+        </style>
+    </head>
+    <body>
+        <a href="index.html" style="text-decoration:none;">go back</a>
+        <br/><br/>
+        <form id="input">
+            max speed(m/s):<br>
+            <input type="text" name="mv"><br>
+            min speed(m/s):<br>
+            <input type="text" name="v"><br>
+            radius(m):<br>
+            <input type="text" name="r"><br>
+            angle(degrees):<br>
+            <input type="text" name="theta"><br>
+            coefficient of friction:<br>
+            <input type="text" name="mu"><br>
+        </form>
+        
+        <br><br>
+        solving for:<br>
+        <button type="button" onclick="bankedCurvesMaxSpeed()">max speed(m/s)</button>
+        <br><br>
+        <button type="button" onclick="bankedCurvesMinSpeed()">min speed(m/s)</button>
+        <br><br>
+        <button type="button" onclick="bankedCurvesRadius()">radius(m)</button>
+        <br><br>
+        <button type="button" onclick="bankedCurvesAngle()">angle(degrees)</button>
+        <br><br>
+        <button type="button" onclick="bankedCurvesMu()">coefficient of friction</button><br>
+        
+        <p id="speed">max speed(m/s) = </p>
+        <p id="mspeed">min speed(m/s) = </p>
+        <p id="radius">radius(m) = </p>
+        <p id="theta">angle(degrees) = </p>
+        <p id="mu">coefficient of friction = </p>
+        
+        <br><br><br><br><br>
+        
+        <p>solve for Fn (N)</p>
+        <p>Fy = 0</p>
+        <p>Fny - Fg - Ffy = 0</p>
+        <p>Fn * cos(&theta;) - m * g - Fn * &mu; * sin(&theta;) = 0</p>
+        <p>Fn * cos(&theta;) - Fn * &mu; * sin(&theta;) = m * g</p>
+        <p>Fn(cos(&theta;) - &mu; * sin(&theta;)) = m * g</p>
+        <p>Fn = (m * g) / (cos(&theta;) - &mu; * sin(&theta;))</p>
+        <br>
+        <p>solve for v max (m/s)</p>
+        <p>Fx = Fnx + Ffx = m(v^2 / r)</p>
+        <p>Fn * sin(&theta;) + Ff * cos(&theta;) = m(v^2 / r)</p>
+        <p>Fn * sin(&theta;) + &mu; * Fn * cos(&theta;) = m(v^2 / r)</p>
+        <p>Fn(sin(&theta;) + &mu; * cos(&theta;)) = m(v^2 / r)</p>
+        <p>((m * g) / (cos(&theta;) - &mu; * sin(&theta;))) * (sin(&theta;) + &mu; * cos(&theta;)) = v^2 / r</p>
+        <p>v max = rad((r * g * (sin(&theta;) + &mu; * cos(&theta;))) / (cos(&theta;) - &mu; * sin(&theta;)))</p>
+        <br>
+        <p>solve for v min (m/s)</p>
+        <p>Fx = Ffx - Fnx = -m(v^2 / r)</p>
+        <p>&mu; * Fn * cos(&theta;) - Fn * sin(&theta;) = -m(v^2 / r)</p>
+        <p>Fn(&mu; * cos(&theta;) - sin(&theta;)) = -m(v^2 / r)</p>
+        <p>Fn(sin(&theta;) - &mu; * cos(&theta;)) = m(v^2 / r)</p>
+        <p>((m * g) / (cos(&theta;) + &mu; * sin(&theta;))(sin(&theta;) - &mu; * cos(&theta;)) = m(v^2 / r)</p>
+        <p>v min = rad((r * g * (sin(&theta;) - &mu; * cos(&theta;))) / (cos(&theta;) + &mu; * sin(&theta;)))</p>
+        <br>
+        <p>solve for r (m)</p>
+        <p>Fx = Fnx + Ffx = m(v^2 / r)</p>
+        <p>Fn * sin(&theta;) + Ff * cos(&theta;) = m(v^2 / r)</p>
+        <p>Fn * sin(&theta;) + &mu; * Fn * cos(&theta;) = m(v^2 / r)</p>
+        <p>Fn(sin(&theta;) + &mu; * cos(&theta;)) = m(v^2 / r)</p>
+        <p>((m * g) / (cos(&theta;) - &mu; * sin(&theta;))) * (sin(&theta;) + &mu; * cos(&theta;)) = v^2 / r</p>
+        <p>v^2 = (r * g * (sin(&theta;) + &mu; * cos(&theta;))) / (cos(&theta;) - &mu; * sin(&theta;))</p>
+        <p>r = (v^2(cos(&theta;) - &mu; * sin(&theta;))) / (g * (sin(&theta;) + &mu; * cos(&theta;)))</p>
+        <br>
+        <p>solve for &theta; (degrees)</p>
+        <p>v max = rad((r * g * (sin(&theta;) + &mu; * cos(&theta;))) / (cos(&theta;) - &mu; * sin(&theta;)))</p>
+        <p>v^2 = (r * g)((sin(&theta;) + &mu; * cos(&theta;)) / (cos(&theta;) - &mu; * sin(&theta;)))</p>
+        <p>v^2 / (r * g) = (sin(&theta;) + &mu; * cos(&theta;)) / (cos(&theta;) - &mu; * sin(&theta;))</p>
+        <p>v^2 / (r * g) = (tan(&theta;) + &mu;) / (1 - &mu; * tan(&theta;))</p>
+        <p>(v^2 / (r * g))(1 - tan(&theta;)) = tan(&theta;) + &mu;</p>
+        <p>v^2 / (r * g) - v^2 (r * g) * &mu; * tan(&theta;) = tan(&theta;) + &mu;</p>
+        <p>v^2 / (r * g) - &mu; = &mu; * tan(&theta;) * (v^2 / (r * g)) + tan(&theta;)</p>
+        <p>v^2 / (r * g) - &mu; = tan(&theta;)(&mu; * (v^2 / (r * g)) + 1)</p>
+        <p>tan(&theta;) = ((v^2 / (r * g)) - &mu;) / (&mu; * (v^2 / (r * g)) + 1)</p>
+        <p>&theta; = arctan(((v^2 / (r * g)) - &mu;) / (&mu; * (v^2 / (r * g)) + 1))</p>
+        <br>
+        <p>solve for &mu;</p>
+        <p>v max = rad((r * g * (sin(&theta;) + &mu; * cos(&theta;))) / (cos(&theta;) - &mu; * sin(&theta;)))</p>
+        <p>v^2 = (r * g)((sin(&theta;) + &mu; * cos(&theta;)) / (cos(&theta;) - &mu; * sin(&theta;)))</p>
+        <p>v^2 / (r * g) = (sin(&theta;) + &mu; * cos(&theta;)) / (cos(&theta;) - &mu; * sin(&theta;))</p>
+        <p>(v^2 / (r * g))(cos(&theta;) - &mu; * sin(&theta;)) = sin(&theta;) + &mu; * cos(&theta;)</p>
+        <p>(v^2 / (r * g)) * cos(&theta;) - (v^2 / (r * g)) * &mu; * sin(&theta;) = sin(&theta;) + &mu; * cos(&theta;)</p>
+        <p>(-v^2 / (r * g) * &mu; * sin(&theta;) - &mu; * cos(&theta;) = sin(&theta;) - (v^2 / (r * g)) * cos(&theta;)</p>
+        <p>&mu;((-v^2 / (r * g)) * sin(&theta;) - cos(&theta;)) = sin(&theta;) - (v^2 / (r * g)) * cos(&theta;)</p>
+        <p>&mu; = (sin(&theta;) - (v^2 / (r * g)) * cos(&theta;)) / ((-v^2 / (r * g)) * sin(&theta;) - cos(&theta;))</p>
+        
+    <script>
+        var g = 9.80665;
+        var x = document.getElementById("input");
+        
+        function bankedCurvesMaxSpeed() {
+            var r = x.elements[2].value;
+            var theta = x.elements[3].value;
+            var mu = x.elements[4].value;
+            var speed = "max speed(m/s) = " + Math.sqrt((r * g * (Math.sin(theta * Math.PI / 180) + mu * Math.cos(theta * Math.PI / 180))) / (Math.cos(theta * Math.PI / 180) - mu * Math.sin(theta * Math.PI / 180)));
+            document.getElementById("speed").innerHTML = speed;
+        }
+        
+        function bankedCurvesMinSpeed() {
+            var r = x.elements[2].value;
+            var theta = x.elements[3].value;
+            var mu = x.elements[4].value;
+            var mspeed = "min speed(m/s) = " + Math.sqrt((r * g * (Math.sin(theta * Math.PI / 180) - mu * Math.cos(theta * Math.PI / 180))) / (Math.cos(theta * Math.PI / 180) + mu * Math.sin(theta * Math.PI / 180)));
+            document.getElementById("mspeed").innerHTML = mspeed;
+        }
+
+        function bankedCurvesMu() {
+            var v = x.elements[0].value;
+            var r = x.elements[2].value;
+            var theta = x.elements[3].value;
+            var mu = "coefficient of friction = " + (Math.sin(theta * Math.PI / 180) - ((Math.pow(v,2) / (r * g)) * Math.cos(theta * Math.PI / 180))) / ((Math.pow(v,2) * -1) / (r * g) * Math.sin(theta * Math.PI / 180) - Math.cos(theta * Math.PI / 180));
+            document.getElementById("mu").innerHTML = mu;
+        }
+
+        function bankedCurvesRadius() {
+            var v = x.elements[0].value;
+            var theta = x.elements[3].value;
+            var mu = x.elements[4].value;
+            var radius = "radius(m) = " + (Math.pow(v,2) * (Math.cos(theta * Math.PI / 180) - mu * Math.sin(theta * Math.PI / 180))) / (g * (Math.sin(theta * Math.PI / 180) + mu * Math.cos(theta * Math.PI / 180)));
+            document.getElementById("radius").innerHTML = radius;
+        }
+
+        function bankedCurvesAngle() {
+            var v = x.elements[0].value;
+            var r = x.elements[2].value;
+            var mu = x.elements[4].value;
+            var theta = "angle(degrees) = " + (Math.atan((((Math.pow(v,2) / (r * g)) - mu) / (((mu * Math.pow(v,2)) / (r * g)) + 1)))) * 180 / Math.PI;
+            document.getElementById("theta").innerHTML = theta;
+        }
+    </script>
+    </body>
+</html>

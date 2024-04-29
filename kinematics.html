@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>kinematics</title>
+    <link type="text/css" href="physics-style.css" rel="stylesheet"/>
+    
+    <style>
+        .html {
+            font-family:"Arial";
+        }
+        .pageDisp {
+            display: none;
+        }
+    </style>
+    <script src="js-libraries/algebrite.bundle-for-browser.js"></script>
+</head>
+<body onload="start()">
+    <div id="nonCalc">
+        <a href="index.html" style="text-decoration:none;">go back</a>
+        <br/><br/>
+        <button type="button" onclick="goToCalc()">switch to calculus</button>
+        <br/>
+        <p>only input the fields that apply to what you are trying to solve</p>
+        <p>click on the value you want to solve for below the inputs</p>
+        <br/>
+        <form id="nonCalcForm">
+            <pre>
+    a = <input type="text" value=""><br/>
+    v = <input type="text" value=""><br/>
+   vi = <input type="text" value=""><br/>
+   vf = <input type="text" value=""><br/>
+   vx = <input type="text" value=""><br/>
+   vy = <input type="text" value=""><br/>
+    d = <input type="text" value=""><br/>
+    t = <input type="text" value=""><br/>
+angle = <input type="text" value=""><br/>
+            </pre>
+        </form>
+        <br/>
+        <a onclick="calculateNonCalc(); solveAcc()">acceleration = </a><span id="accLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveVel()">velocity = </a><span id="velLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveVeli()">initial velocity = </a><span id="veliLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveVelf()">final velocity = </a><span id="velfLanding"></span></br>
+        <a onclick="calculateNonCalc(); solveVelx()">x velocity = </a><span id="velxLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveVely()">y velocity = </a><span id="velyLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveDisp()">displacement = </a><span id="dispLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveTime()">time = </a><span id="timeLanding"></span><br>
+        <a onclick="calculateNonCalc(); solveAng()">angle = </a><span id="angleLanding"></span>
+    </div>
+    
+    <div id="withCalc" class="pageDisp">
+        <a href="index.html" style="text-decoration:none;">go back</a>
+        <br/><br/>
+        <button type="button" onclick="goToNonCalc()">switch to non calculus</button>
+        <br/>
+        <p>only input the fields that apply to what you are trying to solve</p>
+        <p>click on the value you want to solve for below the inputs</p>
+        <br/>
+        <form id="withCalcForm">
+            <pre>
+dv/dt = <input type="text" value=""><br/>
+ds/dt = <input type="text" value=""><br/>
+dx/dt = <input type="text" value=""><br/>
+dy/dt = <input type="text" value=""><br/>
+    s = <input type="text" value=""><br/>
+            </pre>
+        </form>
+        <br/>
+        <pre>
+<a onclick="calculateWithCalc(); solveAcc()" >acceleration = </a><span id="accCLanding"></span><br/>
+<a onclick="calculateWithCalc(); solveVel()" >    velocity = </a><span id="velCLanding"></span><br/>
+<a onclick="calculateWithCalc(); solveVelx()">  x velocity = </a><span id="velxCLanding"></span><br/>
+<a onclick="calculateWithCalc(); solveVely()">  y velocity = </a><span id="velyCLanding"></span><br/>
+<a onclick="calculateWithCalc(); solveDisp()">displacement = </a><span id="dispCLanding"></span>
+        </pre>
+    </div>
+    <script>
+        //non calc
+        var a;
+        var v;
+        var vi;
+        var vf;
+        var vx;
+        var vy;
+        var angle;
+        
+        //with calc
+        var dv;
+        var ds;
+        var dy;
+        var dx;
+        var s;
+        
+        //both
+        var d;
+        var t;
+        
+        //constants
+        var g = 9.8;
+        
+        //backend
+        var modekinetic = 0;
+        var blank = "";
+    
+        function start() {
+            modekinetic = sessionStorage.getItem("modekinetic");
+            if(modekinetic != 1) {
+                goToNonCalc();
+            }
+            if(modekinetic == 1) {
+                goToCalc();
+            }
+        }
+        
+        function goToNonCalc() {
+            document.getElementById("withCalc").style.display = "none";
+            document.getElementById("nonCalc").style.display = "block";
+            modekinetic = 0;
+            sessionStorage.removeItem("modekinetic");
+            sessionStorage.setItem("modekinetic",modekinetic);
+        }
+        
+        function goToCalc() {
+            document.getElementById("nonCalc").style.display = "none";
+            document.getElementById("withCalc").style.display = "block";
+            modekinetic = 1;
+            sessionStorage.removeItem("modekinetic");
+            sessionStorage.setItem("modekinetic",modekinetic);
+        }
+        
+        function calculateNonCalc() {
+            a = document.getElementById("nonCalcForm").elements[0].value;
+            v = document.getElementById("nonCalcForm").elements[1].value;
+            vi = document.getElementById("nonCalcForm").elements[2].value;
+            vf = document.getElementById("nonCalcForm").elements[3].value;
+            vx = document.getElementById("nonCalcForm").elements[4].value;
+            vy = document.getElementById("nonCalcForm").elements[5].value;
+            d = document.getElementById("nonCalcForm").elements[6].value;
+            t = document.getElementById("nonCalcForm").elements[7].value;
+            angle = document.getElementById("nonCalcForm").elements[8].value;
+        }
+        
+        function calculateWithCalc() {
+            dv = document.getElementById("withCalcForm").elements[0].value;
+            ds = document.getElementById("withCalcForm").elements[1].value;
+            dx = document.getElementById("withCalcForm").elements[2].value;
+            dy = document.getElementById("withCalcForm").elements[3].value;
+            s = document.getElementById("withCalcForm").elements[4].value;
+        }
+        
+        function solveAcc() {
+            if(modekinetic == 0) {
+                if(vf != blank && vi != blank && d != blank) {
+                    vi = parseFloat(vi);
+                    d = parseFloat(d);
+                    vf = parseFloat(vf);
+                    a = (Math.pow(vf,2) - Math.pow(vi,2)) / (2 * d);
+                }
+                
+                if(d != blank && vi != blank && t != blank) {
+                    vi = parseFloat(vi);
+                    d = parseFloat(d);
+                    t = parseFloat(t);
+                    a = (d - vi * t) / (.5 * Math.pow(t,2));
+                }
+                
+                if(vf != blank && vi != blank && t != blank) {
+                    vi = parseFloat(vi);
+                    vf = parseFloat(vf);
+                    t = parseFloat(t);
+                    a = (vf - vi) / t;
+                }
+                
+                if(v != blank && t != blank) {
+                    v = parseFloat(v);
+                    t = parseFloat(t);
+                    a = v / t;
+                }
+                
+                document.getElementById("accLanding").innerHTML = a;
+                return;
+            }
+            
+            if(modekinetic == 1) {
+                var temp = "";
+                if(dx != blank || ds != blank || dy != blank) {
+                    if(ds != blank){temp = ds;}
+                    if(dx != blank){temp = dx;}
+                    if(dy != blank){temp = dy;}
+                    dv = Algebrite.derivative(temp);
+                }
+                
+                if(s != blank) {
+                    temp = Algebrite.derivative(s);
+                    dv = Algebrite.derivative(temp);
+                }
+                
+                document.getElementById("accCLanding").innerHTML = dv;
+                return;
+            }
+        }
+        
+        function solveVel() {
+            if(modekinetic == 0) {
+                if(vx != blank && vy != blank) {
+					vx = parseFloat(vx);
+					vy = parseFloat(vy);
+                    v = Math.sqrt(Math.pow(vx,2) + Math.pow(vy,2));
+                }
+
+                document.getElementById("velLanding").innerHTML = v;
+                return;
+            }
+            
+            if(modekinetic == 1) {
+                if(dv != blank) {
+                    ds = Algebrite.integral(dv);
+                }
+                if(s != blank) {
+                    ds = Algebrite.derivative(s);
+                }
+                
+                document.getElementById("velCLanding").innerHTML = ds;
+                return;
+            }
+        }
+        
+        function solveVeli() {
+            if(modekinetic == 0) {
+                if(vf != blank && a != blank && d != blank) {
+                    vf = parseFloat(vf);
+                    a = parseFloat(a);
+                    d = parseFloat(d);
+                    vi = Math.sqrt(Math.pow(vf,2) - 2 * a * d);
+                }
+                
+                if(vf != blank && a != blank && t != blank) {
+                    vf = parseFloat(vf);
+                    a = parseFloat(a);
+                    t = parseFloat(t);
+                    vi = vf - a * t;
+                }
+
+                if(d != blank && a != blank && t != blank) {
+                    d = parseFloat(d);
+                    a = parseFloat(a);
+                    t = parseFloat(t);
+                    vi = (d - .5 * a * Math.pow(t,2)) / t;
+                }
+                
+                document.getElementById("veliLanding").innerHTML = vi;
+                return;
+            }
+        }
+        
+        function solveVelf() {
+            if(modekinetic == 0) {
+                if(vi != blank && a != blank && d !=blank) {
+                    vi = parseFloat(vi);
+                    a = parseFloat(a);
+                    d = parseFloat(d);
+                    vf = Math.sqrt(Math.pow(vi,2) + 2 * a * d);
+                }
+                
+                if(vi != blank && a != blank && t != blank) {
+                    vi = parseFloat(vi);
+                    a = parseFloat(a);
+                    t = parseFloat(t);
+                    vf = vi + a * t;
+                }
+                
+                document.getElementById("velfLanding").innerHTML = vf;
+                return;
+            }
+        }
+        
+        function solveVely() {
+            if(modekinetic == 0) {
+                if(v != blank && angle != blank) {
+                    v = parseFloat(v);
+                    angle = parseFloat(angle);
+                    vy = v * Math.sin(angle * Math.PI / 180);
+                }
+                
+                // if(vx != blank && angle != blank){
+                //     vx = parseFloat(vx);
+                //     angle = parseFloat(angle);
+                //     vy = vx / Math.tan(angle * Math.PI / 180);
+                // }
+                
+                document.getElementById("velyLanding").innerHTML = vy;
+                return;
+            }
+            
+            if(modekinetic == 1) {
+                if(dv != blank) {
+                    dy = Algebrite.integral(dv);
+                }
+                if(s != blank) {
+                    dy = Algebrite.derivative(s);
+                }
+                
+                document.getElementById("velyCLanding").innerHTML = dy;
+                return;
+            }
+        }
+        
+        function solveVelx() {
+            if(modekinetic == 0) {
+                if(v != blank && angle != blank) {
+                    v = parseFloat(v);
+                    angle = parseFloat(angle);
+                    vx = v * Math.cos(angle * Math.PI / 180);
+                }
+                
+                // if(vy != blank && angle != blank){
+                //     vy = parseFloat(vx);
+                //     angle = parseFloat(angle);
+                //     vx = vy / Math.tan(angle * Math.PI / 180);
+                // }
+                
+                document.getElementById("velxLanding").innerHTML = vx;
+                return;
+            }
+            
+            if(modekinetic == 1) {
+                if(dv != blank) {
+                    dx = Algebrite.integral(dv);
+                }
+                if(s != blank) {
+                    dx = Algebrite.derivative(s);
+                }
+                
+                document.getElementById("velxCLanding").innerHTML = dx;
+                return;
+            }
+        }
+        
+        function solveDisp() {
+            if(modekinetic == 0) {
+                if(vi != blank && t != blank && a != blank) {
+                    vi = parseFloat(vi);
+                    a = parseFloat(a);
+                    t = parseFloat(t);
+                    d = vi * t + .5 * a * Math.pow(t,2);
+                }
+                
+                if(vi != blank && vf != blank && a != blank) {
+                    vi = parseFloat(vi);
+                    a = parseFloat(a);
+                    vf = parseFloat(vf);
+                    d = (Math.pow(vf,2) - Math.pow(vi,2)) / (2 * a);
+                }
+                
+                if(v != blank && t != blank) {
+                    v = parseFloat(v);
+                    t = parseFloat(t);
+                    d = v * t;
+                }
+                
+                document.getElementById("dispLanding").innerHTML = d;
+                return;
+            }
+            
+            if(modekinetic == 1) {
+                var temp;
+                if(dv != blank) {
+                    temp = Algebrite.integral(dv);
+                    s = Algebrite.integral(temp);
+                }
+                if(dx != blank || ds != blank || dy != blank) {
+                    if(ds != blank){temp = ds;}
+                    if(dx != blank){temp = dx;}
+                    if(dy != blank){temp = dy;}
+                    s = Algebrite.integral(temp);
+                }
+                
+                document.getElementById("dispCLanding").innerHTML = s;
+                return;
+            }
+        }
+        
+        function solveTime() {
+            if(modekinetic == 0) {
+                if(vi == 0 && d != blank && a != blank) {
+                    d = parseFloat(d);
+                    a = parseFloat(a);
+                    t = Math.sqrt(d / (.5 * a));
+                }
+                
+                if(vi != blank && d != blank && a != blank) {
+                    vi = parseFloat(vi);
+                    d = parseFloat(d);
+                    a = parseFloat(a);
+                    t = (-vi + Math.sqrt(Math.pow(vi,2) - 2 * a * d)) / a;
+                    if(Math.abs(t) != t){
+                        console.log(t);
+                        t = (-vi - Math.sqrt(Math.pow(vi,2) - 2 * a * d)) / a;
+                    }
+                }
+
+                if(vf != blank && vi != blank && a != blank){
+                    vf = parseFloat(vf);
+                    a = parseFloat(a);
+                    vi = parseFloat(vi);
+                    t = (vf - vi) / a;
+                }
+                
+                document.getElementById("timeLanding").innerHTML = t;
+                return;
+            }
+            
+            // if(modekinetic == 1) {
+            //     if(s != blank && ds != blank) {
+            //         t = Algebrite.derivative(s);
+                    
+            //     }
+            // }
+        }
+        
+        function solveAng() {
+            if(modekinetic == 0) {
+                if(vy != blank && v != blank) {
+                    vy = parseFloat(vy);
+                    v = parseFloat(v);
+                    angle = Math.asin(vy / v);
+                }
+                
+                if(vx != blank && v != blank) {
+                    vx = parseFloat(vx);
+                    v = parseFloat(v);
+                    angle = Math.acos(vx / v);
+                }
+                
+                if(vy != blank && vx != blank) {
+                    vy = parseFloat(vy);
+                    vx = parseFloat(vx);
+                    angle = Math.atan(vy / vx);
+                }
+                
+                document.getElementById("angleLanding").innerHTML = angle;
+                return;
+            }
+        }
+    </script>
+</body>
+</html>
